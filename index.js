@@ -4,6 +4,7 @@ var log = require('xqnode-logger'),
 module.exports = function() {
 	"use strict";
 	
-	var coffebreak = new CoffeeBreak();
-	coffebreak.runTests();
+	var coffeebreak = new CoffeeBreak();
+	coffeebreak.printStatus();
+	coffeebreak.runTests();
 };

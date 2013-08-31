@@ -1,0 +1,32 @@
+{
+  "name": "coffeebreak",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@kallisto:~/coffeebreak.git"
+  },
+  "keywords": [
+    "coffee",
+    "coffeebreak",
+    "testrunner",
+    "unittest",
+    "mocca",
+    "moccatest",
+    "moccatestrunner"
+  ],
+  "author": "Andi Heinkelein <andi@noname-media.com> (http://noname-media.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "xqnode-logger": "0.0.2",
+    "glob": "~3.2.6",
+    "minimatch": "~0.2.12"
+  }
+}
