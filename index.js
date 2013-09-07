@@ -5,6 +5,6 @@ module.exports = function() {
 	"use strict";
 	
 	var coffeebreak = new CoffeeBreak();
-	coffeebreak.printStatus();
+	// coffeebreak.printStatus();
 	coffeebreak.runTests();
 };

@@ -27,6 +27,12 @@
   "dependencies": {
     "xqnode-logger": "0.0.2",
     "glob": "~3.2.6",
-    "minimatch": "~0.2.12"
+    "minimatch": "~0.2.12",
+    "node.extend": "~1.0.8"
+  },
+  "devDependencies": {
+    "expect.js": "~0.2.0",
+    "sinon": "~1.7.3",
+    "sinon-expect": "~0.2.0"
   }
 }
