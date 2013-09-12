@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Runner</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="/lib/mocha/mocha.css" />
+  <link rel="stylesheet" type="text/css" href="/lib/coffeebreak/styles.css">
+
+  <script type="text/javascript" src="/lib/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/coffeebreak/coffeebreak.js"></script>
+
+  {{#each libs}}
+    <script type="text/javascript" src="{{path}}"></script>
+  {{/each}}
+
+  <script type="text/javascript" src="/lib/mocha/mocha.js"></script>
+
+  {{#if usingRequirejs}}
+    <script type="text/javascript" src="/lib/requirejs/require.js" data-main="main"></script>
+    <script type="text/javascript" src="project.js"></script>
+    {{#each src}}
+      <script type="text/javascript" src="{{path}}"></script>
+    {{/each}}
+
+    <script type="text/javascript">
+      var specs = [];
+      {{#each specs}}
+        specs.push('{{pathrjs}}');
+      {{/each}}
+      define('coffeeBreakSpecs', specs);
+    </script>
+  {{else}}
+    <script type="text/javascript" src="project.js"></script>
+    {{#each src}}
+      <script type="text/javascript" src="{{path}}"></script>
+    {{/each}}
+    {{#each specs}}
+      <script type="text/javascript" src="{{path}}"></script>
+    {{/each}}
+  {{/if}}
+
+  <script type="text/javascript">
+
+    //Disable console.log
+    // if (window.mochaPhantomJS) {
+    //   var origLog = console.log;
+    //   console.log = function() {
+    //     if (arguments[0].charAt(0) === '{' && arguments[0].indexOf('"instrumentation": "node-jscoverage"') !== -1) {
+    //       origLog.apply(console, arguments);
+    //     }
+    //   };
+    // }
+  </script>
+
+
+
+
+</head>
+<body id="testRunner">
+<header id="coffeeBreakHeader"></header>
+<div id="mocha"></div>
+<footer>
+
+</footer>
+</body>
+</html>

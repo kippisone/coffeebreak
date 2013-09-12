@@ -28,7 +28,10 @@
     "xqnode-logger": "0.0.2",
     "glob": "~3.2.6",
     "minimatch": "~0.2.12",
-    "node.extend": "~1.0.8"
+    "node.extend": "~1.0.8",
+    "mocha": "~1.12.1",
+    "express": "~3.4.0",
+    "hbs": "~2.3.1"
   },
   "devDependencies": {
     "expect.js": "~0.2.0",

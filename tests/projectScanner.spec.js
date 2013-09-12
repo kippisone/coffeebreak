@@ -2,7 +2,7 @@ var expect = require('expect.js'),
 	path = require('path');
 
 describe('Scan project dir', function() {
-	var ProjectScanner = require('../lib/projectScanner');
+	var ProjectScanner = require('../modules/projectScanner');
 	beforeEach(function() {
 
 	});

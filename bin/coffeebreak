@@ -1,2 +1,6 @@
 #!/usr/bin/env node
-require('../index.js')();
+var args = process.argv.slice(2);
+
+console.log('ARGS:', args);
+var command = args[0] || null;
+require('../index.js')(command);

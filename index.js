@@ -1,10 +1,20 @@
 var log = require('xqnode-logger'),
-	CoffeeBreak = require('./lib/coffeeBreak');
+	CoffeeBreak = require('./modules/coffeeBreak'),
+	expressServer = require('./modules/expressServer');
 
-module.exports = function() {
+module.exports = function(command) {
 	"use strict";
 	
-	var coffeebreak = new CoffeeBreak();
-	// coffeebreak.printStatus();
-	coffeebreak.runTests();
+	if (command === 'server') {
+		expressServer.start();
+
+		process.on('SIGINT', function() {
+			expressServer.stop();
+		});
+	}
+	else {
+		var coffeebreak = new CoffeeBreak();
+		// coffeebreak.printStatus();
+		coffeebreak.start();
+	}
 };

@@ -1,5 +1,5 @@
 var expect = require('expect.js'),
-	TestRunner = require('../lib/testRunner'),
+	TestRunner = require('../modules/testRunner'),
 	sinon = require('sinon');
 
 expect = require('sinon-expect').enhance(expect, sinon, 'was');
@@ -15,7 +15,8 @@ var testRunner;
 	});
 
 	it('Should run a node test', function(done) {
-		var execStub = sinon.stub(require('child_process'), 'exec');
+		var execStub = sinon.stub(testRunner, 'exec');
+		execStub.yields(null, 'done', '');
 		testRunner.run({
 			project: 'Test Mobule',
 			tests: './tests/**/*.spec.js',
@@ -24,6 +25,9 @@ var testRunner;
 			expect(err).to.be(null);
 			expect(result).to.eql({});
 			expect(execStub).was.called();
+			expect(execStub).was.calledWith('mocha ./tests/**/*.spec.js', {
+				cwd: '/tmp/example'
+			}, sinon.match.func);
 
 
 			execStub.restore();
@@ -32,6 +36,6 @@ var testRunner;
 	});
 
 	it('Should run a frontend test', function(done) {
-		
+		done();
 	});
 });
