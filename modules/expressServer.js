@@ -7,7 +7,7 @@ module.exports = function() {
 	var app;
 
 	var ExpressServer = function() {
-		this.app = app;
+		
 	};
 
 	/**
@@ -19,6 +19,7 @@ module.exports = function() {
 		log.sys('Starting CoffeeBreak server');
 
 		app = express();
+		this.app = app;
 
 		var cbconf = {
 			port: 3005
@@ -51,7 +52,7 @@ module.exports = function() {
 	 */
 	ExpressServer.prototype.stop = function() {
 		log.sys('Stoping CoffeeBreak server');
-		process.exit();
+		// app.close();
 	};
 
 	return new ExpressServer();

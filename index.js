@@ -4,17 +4,24 @@ var log = require('xqnode-logger'),
 
 module.exports = function(command) {
 	"use strict";
+
+	var coffeeBreak = new CoffeeBreak();
 	
 	if (command === 'server') {
 		expressServer.start();
+		expressServer.app.coffeeBreak = coffeeBreak;
+		coffeeBreak.scanProject(function(err, conf) {
+			log.sys('Server started successful');
+		});
 
 		process.on('SIGINT', function() {
 			expressServer.stop();
+			process.exit();
 		});
 	}
 	else {
-		var coffeebreak = new CoffeeBreak();
-		// coffeebreak.printStatus();
-		coffeebreak.start();
+		var coffeeBreak = new CoffeeBreak();
+		// coffeeBreak.printStatus();
+		coffeeBreak.start();
 	}
 };
