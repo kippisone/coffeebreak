@@ -20,8 +20,7 @@ module.exports = function(command) {
 		});
 	}
 	else {
-		var coffeeBreak = new CoffeeBreak();
-		// coffeeBreak.printStatus();
+		coffeeBreak.printStatus();
 		coffeeBreak.start();
 	}
 };

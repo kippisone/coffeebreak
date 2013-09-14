@@ -2,7 +2,8 @@ var glob = require('glob'),
 	minimatch = require('minimatch'),
 	log = require('xqnode-logger'),
 	extend = require('node.extend'),
-	path = require('path');
+	path = require('path'),
+	fs = require('fs');
 
 /**
  * @module projectScanner module
@@ -28,26 +29,27 @@ module.exports = function() {
 	 */
 	ProjectScanner.prototype.scan = function(dir, callback) {
 		log.dev('\033[38;5;220mScan dir...\033[m', dir);
-		glob('**', {
+		glob('**/+(coffeebreak|.coffeebreak)?(.json)', {
 			cwd: dir,
 			dot: true
 		}, function(err, files) {
 			files.forEach(function(file) {
-				if (/\.?coffeebreak.json$/.test(file)) {
-					log.dev('Parse coffeebreak project configurstion', file);
-					var project = require(path.join(dir, file));
+				log.dev('Parse coffeebreak project configurstion', file);
+				var project = fs.readFileSync(path.join(dir, file));
+				if (project) {
+					var projectDir = path.dirname(path.join(dir, file));
+
+					project = JSON.parse(project);
+					
 					if (!this.projects[project.project]) {
 						this.projects[project.project] = {
-							files: []
+							files: this.getProjectFiles(projectDir, project.files || '**/!(*.spec|*.min).js'),
+							tests: this.getProjectFiles(projectDir, project.tests || '**/*.spec.js')
 						};
 					}
 
-					this.projects[project.project].cwd = path.dirname(path.join(dir, file));
-					extend(this.projects[project.project], project);
-				}
-				
-				if (/\.js(on)?$/.test(file)) {
-					this.files.push(file);
+					this.projects[project.project].cwd = projectDir;
+					this.projects[project.project] = extend(true, project, this.projects[project.project]);
 				}
 			}.bind(this));
 
@@ -55,6 +57,19 @@ module.exports = function() {
 			callback(null, this.projects);
 
 		}.bind(this));
+	};
+
+	/**
+	 * Scan a project folder and returns a files array
+	 *
+	 * @method getProjectFiles
+	 * @param {String} filePattern File pattern
+	 */
+	ProjectScanner.prototype.getProjectFiles = function(dir, filePattern) {
+		log.dev('Scan project folder ' + dir + ' using pattern ' + filePattern);
+		return glob.sync(filePattern, {
+			cwd: dir
+		});
 	};
 
 	return ProjectScanner;

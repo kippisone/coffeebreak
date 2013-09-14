@@ -1,5 +1,4 @@
 {
 	"project": "ModuleA",
-	"tests": "./tests/**/*.spec.js",
 	"browser": true
 }

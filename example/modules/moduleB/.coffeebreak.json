@@ -1,4 +1,3 @@
 {
-	"project": "ModuleB",
-	"tests": "./tests/**/*.spec.js"
+	"project": "ModuleB"
 }

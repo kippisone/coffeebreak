@@ -17,19 +17,24 @@ describe('Scan project dir', function() {
 			expect(err).to.be(null);
 			expect(data).to.be.an('object');
 			expect(data).to.eql({
-				'Example': {
-					project: 'Example',
-					tests: './tests/**/*.spec.js',
-					browser: true
-				},
 				'ModuleA': {
 					project: 'ModuleA',
-					tests: './tests/**/*.spec.js',
-					browser: true
+					browser: true,
+					cwd: path.join(__dirname, '../example/modules/moduleA'),
+					files: ['lib/lib1.js', 'lib/lib2.js', 'modulea.js'],
+					tests: ['specs/test1.spec.js', 'specs/test2.spec.js']
 				},
 				'ModuleB': {
 					project: 'ModuleB',
-					tests: './tests/**/*.spec.js'
+					cwd: path.join(__dirname, '../example/modules/moduleB'),
+					files: ['moduleb.js'],
+					tests: ['specs/test1.spec.js']
+				},
+				'ModuleC': {
+					project: 'ModuleC',
+					cwd: path.join(__dirname, '../example/modules/moduleC'),
+					files: ['modulec.js'],
+					tests: ['specs/test1.spec.js', 'specs/test2.spec.js', 'specs/test3.spec.js']
 				}
 			});
 

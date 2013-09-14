@@ -1,0 +1,4 @@
+{
+	"project": "ModuleC",
+	"tests": "specs/*.spec.js"
+}

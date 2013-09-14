@@ -1,5 +1,0 @@
-{
-	"project": "Example",
-	"tests": "./tests/**.spec.js",
-	"browser": true
-}
