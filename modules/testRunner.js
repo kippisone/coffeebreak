@@ -89,8 +89,7 @@ module.exports = function() {
 	TestRunner.prototype.runBrowserTests = function(conf, callback) {
 		process.stdout.write('\n  \033[1;4;38;5;246mRun browser tests of project ' + conf.project + ' using PhantomJS\033[m\n\n');
 
-		//TODO implement method
-		
+			
 		callback(null);
 	};
 

@@ -29,7 +29,7 @@ module.exports = function() {
 	 */
 	ProjectScanner.prototype.scan = function(dir, callback) {
 		log.dev('\033[38;5;220mScan dir...\033[m', dir);
-		glob('**/+(coffeebreak|.coffeebreak)?(.json)', {
+		glob('**/+(coffeebreak.json|.coffeebreak.json)', {
 			cwd: dir,
 			dot: true
 		}, function(err, files) {

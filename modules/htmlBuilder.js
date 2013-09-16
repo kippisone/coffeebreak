@@ -1,5 +1,5 @@
 var log = require('xqnode-logger'),
-	Handlebars = require('handlebars'),
+	// Handlebars = require('handlebars'),
 	fs = require('fs');
 
 module.exports = function() {

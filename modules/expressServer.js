@@ -28,7 +28,8 @@ module.exports = function() {
 		app.use(express['static'](__dirname + '/public'));
 		app.use(express.logger('dev'));
 		app.set('view engine', 'hbs');
-		app.engine('html', require('hbs').__express);
+		app.set('views', '../views');
+		app.engine('.hbs', require('hbs').__express);
 		app.baseDir = __dirname;
 
 		/**

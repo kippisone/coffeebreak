@@ -115,5 +115,5 @@ module.exports = function() {
 
 	};
 
-	return CoffeeBreak;
+	return new CoffeeBreak();
 }();
