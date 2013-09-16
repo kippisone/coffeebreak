@@ -41,10 +41,17 @@ module.exports = function() {
 
 	};
 
-	CoffeeBreak.prototype.runTests = function() {
-		this.testRunner.run(this.projects, function(err, result) {
+	CoffeeBreak.prototype.runTests = function(projectName) {
+		if (projectName) {
+			this.testRunner.runOne(this.projects[projectName], function(err, result) {
 
-		});
+			});
+		}
+		else {
+			this.testRunner.run(this.projects, function(err, result) {
+				process.exit();
+			});
+		}
 	};
 
 	/**
