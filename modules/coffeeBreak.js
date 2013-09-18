@@ -4,7 +4,8 @@ var ProjectScanner = require('./projectScanner'),
 	EventEmitter = require('events').EventEmitter,
 	extend = require('node.extend'),
 	log = require('xqnode-logger'),
-	fs = require('fs');
+	fs = require('fs'),
+	path = require('path');
 
 module.exports = function() {
 	// "use strict";
@@ -49,9 +50,28 @@ module.exports = function() {
 		}
 		else {
 			this.testRunner.run(this.projects, function(err, result) {
-				process.exit();
+				
 			});
 		}
+	};
+
+	/**
+	 * Get public CoffeBreak configuration
+	 *
+	 * @method getPublicConf
+	 * @return {Object} Public project configuration
+	 */
+	CoffeeBreak.prototype.getPublicConf = function() {
+		var conf = [];
+
+		for (var p in this.projects) {
+			conf.push({
+				project: this.projects[p].project,
+				dirName: this.projects[p].dirName
+			});
+		}
+
+		return conf;
 	};
 
 	/**
@@ -77,17 +97,33 @@ module.exports = function() {
 	 * @param {Function} callback Callback function
 	 */
 	CoffeeBreak.prototype.watch = function(callback) {
-		//this.projects.forEach(function(project) {
-		//for (var p in this.projects) {
-			// var project = this.projects[p];
-			this.files.forEach(function(file) {
-				log.dev('Watch file for changes: ' + file);
-				fs.watchFile(file, {}, function() {
-					log.info('File was changed: ' + file);
-					this.emit('file.changed', file);
-				}.bind(this));
+		var addWatch = function(file) {
+			var file = path.join(project.cwd, file);
+			log.dev('Watch file for changes: ' + file + ' in project:' + project.project);
+
+			fs.watchFile(file, function() {
+				log.info('File was changed: ' + file);
+				this.emit('file.changed', file, project);
 			}.bind(this));
-		//}
+
+			// var watcher = fs.watch(project.cwd, function (event, filename) {
+			// 	if (filename) {
+			// 		console.log('  Change of type ' + event + ' on file: ' + filename);
+			// 	} else {
+			// 		console.log('filename not provided');
+			// 	}
+			// });
+
+			// watcher.on('change', function() {
+			// 	log.dev('Got watcher.change', arguments);
+			// });
+		};
+		//this.projects.forEach(function(project) {
+		for (var p in this.projects) {
+			var project = this.projects[p];
+			project.files.forEach(addWatch.bind(this));
+			project.tests.forEach(addWatch.bind(this));
+		}
 	};
 
 	/**

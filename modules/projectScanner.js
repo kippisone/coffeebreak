@@ -37,12 +37,15 @@ module.exports = function() {
 				log.dev('Parse coffeebreak project configurstion', file);
 				var project = fs.readFileSync(path.join(dir, file));
 				if (project) {
-					var projectDir = path.dirname(path.join(dir, file));
-
 					project = JSON.parse(project);
+					
+					var projectDir = path.dirname(path.join(dir, file)),
+						projectDirName = project.project.replace(/[^a-zA-Z0-9_-]/g, '');
+
 					
 					if (!this.projects[project.project]) {
 						this.projects[project.project] = {
+							dirName: project.dirName || projectDirName,
 							files: this.getProjectFiles(projectDir, project.files || '**/!(*.spec|*.min).js'),
 							tests: this.getProjectFiles(projectDir, project.tests || '**/*.spec.js')
 						};

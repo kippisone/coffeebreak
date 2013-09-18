@@ -27,15 +27,20 @@ module.exports = function() {
 
 		app.use(express['static'](__dirname + '/public'));
 		app.use(express.logger('dev'));
+		app.engine('.hbs', require('hbs').__express);
 		app.set('view engine', 'hbs');
 		app.set('views', '../views');
-		app.engine('.hbs', require('hbs').__express);
 		app.baseDir = __dirname;
 
 		/**
 		 * Routes
 		 */
 		require('../routes/index.js')(app);
+
+		/**
+		 * Static files
+		 */
+		app.use(express['static']('../public'));
 
 		app.use(function(err, req, res, next) {
 		  console.error(err.stack);

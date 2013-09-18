@@ -8,53 +8,38 @@
 
   <script type="text/javascript" src="/lib/jquery.min.js"></script>
   <script type="text/javascript" src="/lib/coffeebreak/coffeebreak.js"></script>
-
-  {{#each libs}}
-    <script type="text/javascript" src="{{path}}"></script>
-  {{/each}}
-
+  <script type="text/javascript" src="/lib/expect/expect.js"></script>
   <script type="text/javascript" src="/lib/mocha/mocha.js"></script>
-
-  {{#if usingRequirejs}}
-    <script type="text/javascript" src="/lib/requirejs/require.js" data-main="main"></script>
-    <script type="text/javascript" src="project.js"></script>
-    {{#each src}}
-      <script type="text/javascript" src="{{path}}"></script>
-    {{/each}}
-
-    <script type="text/javascript">
-      var specs = [];
-      {{#each specs}}
-        specs.push('{{pathrjs}}');
-      {{/each}}
-      define('coffeeBreakSpecs', specs);
-    </script>
-  {{else}}
-    <script type="text/javascript" src="project.js"></script>
-    {{#each src}}
-      <script type="text/javascript" src="{{path}}"></script>
-    {{/each}}
-    {{#each specs}}
-      <script type="text/javascript" src="{{path}}"></script>
-    {{/each}}
-  {{/if}}
-
   <script type="text/javascript">
-
-    //Disable console.log
-    // if (window.mochaPhantomJS) {
-    //   var origLog = console.log;
-    //   console.log = function() {
-    //     if (arguments[0].charAt(0) === '{' && arguments[0].indexOf('"instrumentation": "node-jscoverage"') !== -1) {
-    //       origLog.apply(console, arguments);
-    //     }
-    //   };
-    // }
+    mocha.setup('bdd');
   </script>
 
+  {{#each libs}}
+    <script type="text/javascript" src="{{this}}"></script>{{/each}}
+
+  {{#each files}}
+    <script type="text/javascript" src="{{this}}"></script>{{/each}}
+
+  {{#each tests}}
+    <script type="text/javascript" src="{{this}}"></script>{{/each}}
 
 
+  <script type="text/javascript">
+    window.onload = function() {
+      if (window.mochaPhantomJS) {
+        mochaPhantomJS.run();
+      }
+      else {
+        
+        var runner = mocha.run();
+        console.log('Runner obj:', runner);
 
+        runner.on('end', function(test){
+          console.log('Test obj:', test);
+        });
+      }
+    };
+  </script>
 </head>
 <body id="testRunner">
 <header id="coffeeBreakHeader"></header>

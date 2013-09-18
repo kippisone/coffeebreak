@@ -1,7 +1,8 @@
 var log = require('xqnode-logger'),
 	Mocha = require('mocha'),
 	glob = require('glob'),
-	path = require('path');
+	path = require('path'),
+	spawn = require('child_process').spawn;
 
 module.exports = function() {
 	// "use strict";
@@ -89,8 +90,27 @@ module.exports = function() {
 	TestRunner.prototype.runBrowserTests = function(conf, callback) {
 		process.stdout.write('\n  \033[1;4;38;5;246mRun browser tests of project ' + conf.project + ' using PhantomJS\033[m\n\n');
 
-			
-		callback(null);
+		//TODO call hooks
+
+		var command = '../node_modules/.bin/mocha-phantomjs';
+		var args = [
+			'http://localhost:3005/projects/' + conf.project + '/SpecRunner.html'
+		];
+
+		console.log('Run with command:', command, args);
+		var child = spawn(command, args);
+		child.stdout.on('data', function (data) {
+		  process.stdout.write(data);
+		});
+
+		child.stderr.on('data', function (data) {
+		  console.log('stderr: ' + data);
+		});
+
+		child.on('close', function (code) {
+		  console.log('child process exited with code ' + code);
+		  callback(null);
+		});
 	};
 
 	return TestRunner;

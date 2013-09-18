@@ -1,0 +1,73 @@
+html {
+
+}
+
+body {
+	padding: 60px 50px;
+	font: 20px/1 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    margin: 0;
+    border-top: none;
+}
+
+#mainNavigation {
+	vertical-align: middle;
+	margin-top: -60px;
+	margin-left: -40px;
+	padding: 5px;
+}
+
+#mainNavigation img {
+    margin: 0;
+    max-width: auto;
+    padding: 0;
+}
+
+#mainNavigation a:link,
+#mainNavigation a:active,
+#mainNavigation a:visited {
+	
+	color: #000;
+	text-decoration: none;
+	font-weight: inherit;
+}
+
+#mainNavigation a:hover {
+	background-color: #ddd;
+}
+
+#mainNavigation a.active {
+	color: purple;
+	background-color: #f0f0f0;
+}
+
+#mainNavigation .navItem {
+	-moz-display: inline-block;
+	-webkit-display: inline-block;
+	display: inline-block;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	padding: 2px 5px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+#mainNavigation .navItem:hover {
+	background-color: #ddd;
+}
+
+#mainNavigation .navItem h1 {
+	font-size: 15px;
+	font-weight: bold;
+	margin: 0;
+	padding: 0;
+}
+
+#mainNavigation .navItem .covLink,
+#mainNavigation .navItem .testLink {
+	font-size: 10px;
+}
+
+#mocha {
+	line-height: 1.5;
+}
