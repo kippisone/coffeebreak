@@ -1,16 +1,43 @@
-var log = require('xqnode-logger'),
+var program = require('commander'),
+	log = require('xqnode-logger'),
 	coffeeBreak = require('./modules/coffeeBreak'),
-	expressServer = require('./modules/expressServer');
+	expressServer = require('./modules/expressServer'),
+	pkg = require('./package.json');
 
-module.exports = function(command) {
+module.exports = function() {
 	"use strict";
+
+	program
+		.version(pkg.version)
+		.usage('[command] [options]')
+		.option('-d', '--dev', 'Run in debug mode')
+		.option('-p', '--port', 'Set server port', '3005')
+		.command('server')
+		.description('Start the server without running tests')
+
+	program.on('--help', function() {
+		coffeeBreak.printStatus();
+	});
+
+	program.parse(process.argv);
+
+	//Set debug mode
+	if (program.dev || process.argv[1] === 'scoffeebreak-dev') {
+		log.setLevel('debug');
+	}
+	else {
+		log.setLevel('sys');
+	}
+
+	var args = process.argv.slice(2);
+	var command = args[0] || null;
 
 	if (command === 'server') {
 		var app = expressServer.start();
 		app.coffeeBreak = coffeeBreak;
-		coffeeBreak.scanProject(function(err, conf) {
-			log.sys('Server started successful');
-		});
+		// coffeeBreak.scanProject(function(err, conf) {
+		// 	log.sys('Server started successful');
+		// });
 
 		process.on('SIGINT', function() {
 			expressServer.stop();

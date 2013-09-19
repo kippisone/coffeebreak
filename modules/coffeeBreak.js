@@ -1,6 +1,7 @@
 var ProjectScanner = require('./projectScanner'),
 	pkg = require('../package.json'),
 	TestRunner = require('./testRunner'),
+	TaskRunner = require('./taskRunner'),
 	EventEmitter = require('events').EventEmitter,
 	extend = require('node.extend'),
 	log = require('xqnode-logger'),
@@ -12,10 +13,12 @@ module.exports = function() {
 
 	var CoffeeBreak = function() {
 
+		this.taskRunner = new TaskRunner();
+		this.taskRunner.coffeeBreak = this;
+
 		this.testRunner = new TestRunner();
 		this.testRunner.coffeeBreak = this;
-
-		this.__tasks = {};
+		this.testRunner.taskRunner = this.taskRunner;
 	};
 
 	extend(CoffeeBreak.prototype, EventEmitter.prototype);
@@ -101,7 +104,7 @@ module.exports = function() {
 	 */
 	CoffeeBreak.prototype.watch = function(callback) {
 		var addWatch = function(file) {
-			var file = path.join(project.cwd, file);
+			file = path.join(project.cwd, file);
 			log.dev('Watch file for changes: ' + file + ' in project:' + project.project);
 
 			fs.watchFile(file, function() {
@@ -124,55 +127,10 @@ module.exports = function() {
 		//this.projects.forEach(function(project) {
 		for (var p in this.projects) {
 			var project = this.projects[p];
-			project.files.forEach(addWatch.bind(this));
+			var watchFiles = project.watch || project.files;
+			watchFiles.forEach(addWatch.bind(this));
 			project.tests.forEach(addWatch.bind(this));
 		}
-	};
-
-	/**
-	 * Register a task
-	 *
-	 * @method registerTask
-	 * @param {String} task Task name
-	 */
-	CoffeeBreak.prototype.registerTask = function(task, taskFunc) {
-		if (['preprocessor'].indexOf(task) === -1) {
-			log.warn('Unknown task name ' + task);
-			return;
-		}
-
-		if (!this.__tasks['preprocessor']) {
-			this.__tasks['preprocessor'] = [];
-		}
-
-		this.__tasks['preprocessor'].push(taskName);
-	};
-
-	/**
-	 * Run all registered tasks
-	 *
-	 * @method runTasks
-	 * @param {String} task Task name
-	 * @param {Object} conf Conf object
-	 * @param {Function} callback Callback function
-	 */
-	CoffeeBreak.prototype.runTasks = function(task, conf, callback) {
-		if (!this.__tasks[task]) {
-			log.dev('No ' + task + ' tasks defined');
-			callback(null, true);
-			return;
-		}
-
-		async.applyEachSeries(this.__tasks[task], conf, log, function(err, result) {
-			if (err) {
-				log.warn('An error occurs in ' + task + ' task! Skipping ...', err);
-				callback(err);
-			}
-			else {
-				log.dev('All ' + task + ' tasks hav been done!', result);
-				callback(null, true);
-			}
-		});
 	};
 
 	/**
@@ -189,8 +147,8 @@ module.exports = function() {
 		bean += '▕      || /     ||    \\      \\____\\___/|_| |_|  \\___|\\___|_.__/|_|  \\___|\\__,_|_|\\_\\\n';
 		bean += '▕      ||▕      ||    ▕            \n';
 		bean += '▕      ||▕      ||    ▕      Version: ' + pkg.version + '    \n';
-		bean += ' \\     ||▕      ||    ▕      Server status: down    \n';
-		bean += '  \\    // \\     ||    /      Tests: 100    \n';
+		bean += ' \\     ||▕      ||    ▕      \n';
+		bean += '  \\    // \\     ||    /      \n';
 		bean += '   `⎻⎻⎻⎻⎻⎻´\\   //    /          \n';
 		bean += '            `⎻⎻⎻⎻⎻⎻⎻´              \n';
 		bean += '\n';

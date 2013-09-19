@@ -2,8 +2,7 @@ var log = require('xqnode-logger'),
 	Mocha = require('mocha'),
 	glob = require('glob'),
 	path = require('path'),
-	spawn = require('child_process').spawn,
-	coffeeBreak = require('./coffeeBreak');
+	spawn = require('child_process').spawn;
 
 module.exports = function() {
 	// "use strict";
@@ -62,7 +61,8 @@ module.exports = function() {
 			}
 		}.bind(this);
 
-		this.coffeeBreak.runTasks('preprocessor', conf, function(err, state) {
+		console.log('Task runner', this.taskRunner);
+		this.taskRunner.runTasks('preprocessor', conf, function(err, state) {
 			if (err) {
 				process.stdout.write('\n  \033[1;4;38;5;246mPreprocessor task failed! Skipping test run\033[m\n\n');
 				return;

@@ -49,6 +49,10 @@ module.exports = function() {
 							files: this.getProjectFiles(projectDir, project.files || '**/!(*.spec|*.min).js'),
 							tests: this.getProjectFiles(projectDir, project.tests || '**/*.spec.js')
 						};
+
+						if (project.watch) {
+							this.projects[project.project].watch = this.getProjectFiles(projectDir, project.watch);
+						}
 					}
 
 					this.projects[project.project].cwd = projectDir;
@@ -69,6 +73,7 @@ module.exports = function() {
 	 * @param {String} filePattern File pattern
 	 */
 	ProjectScanner.prototype.getProjectFiles = function(dir, filePattern) {
+		log.dev('FilePattern', filePattern);
 		if (Array.isArray(filePattern)) {
 			log.dev('Skip file pattern, is an array', filePattern);
 			return filePattern;

@@ -1,6 +1,6 @@
 {
   "name": "coffeebreak",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "directories": {
@@ -33,7 +33,9 @@
     "express": "~3.4.0",
     "hbs": "~2.3.1",
     "mocha-phantomjs": "~3.1.2",
-    "phantomjs": "~1.9.2-0"
+    "phantomjs": "~1.9.2-0",
+    "async": "~0.2.9",
+    "commander": "~2.0.0"
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
