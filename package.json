@@ -31,7 +31,9 @@
     "node.extend": "~1.0.8",
     "mocha": "~1.12.1",
     "express": "~3.4.0",
-    "hbs": "~2.3.1"
+    "hbs": "~2.3.1",
+    "mocha-phantomjs": "~3.1.2",
+    "phantomjs": "~1.9.2-0"
   },
   "devDependencies": {
     "expect.js": "~0.2.0",

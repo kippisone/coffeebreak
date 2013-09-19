@@ -1,5 +1,6 @@
 var log = require('xqnode-logger'),
-	express = require('express');
+	express = require('express'),
+	path = require('path');
 
 module.exports = function() {
 	"use strict";
@@ -25,11 +26,10 @@ module.exports = function() {
 			port: 3005
 		};
 
-		app.use(express['static'](__dirname + '/public'));
 		app.use(express.logger('dev'));
 		app.engine('.hbs', require('hbs').__express);
 		app.set('view engine', 'hbs');
-		app.set('views', '../views');
+		app.set('views', path.join(__dirname, '../views'));
 		app.baseDir = __dirname;
 
 		/**
@@ -40,11 +40,11 @@ module.exports = function() {
 		/**
 		 * Static files
 		 */
-		app.use(express['static']('../public'));
+		app.use(express.static(path.join(__dirname, '../public')));
 
 		app.use(function(err, req, res, next) {
 		  console.error(err.stack);
-		  res.send(500, 'Something broke!');
+		  res.send(500, 'Something broke!\n');
 		});
 
 		app.listen(cbconf.port);

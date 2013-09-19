@@ -7,11 +7,17 @@
   <link rel="stylesheet" type="text/css" href="/lib/coffeebreak/styles.css">
 
   <script type="text/javascript" src="/lib/jquery.min.js"></script>
-  <script type="text/javascript" src="/lib/coffeebreak/coffeebreak.js"></script>
+  {{!-- <script type="text/javascript" src="/lib/coffeebreak/coffeebreak.js"></script> --}}
+  <script type="text/javascript" src="/lib/sinon/sinon.js"></script>
   <script type="text/javascript" src="/lib/expect/expect.js"></script>
+  <script type="text/javascript" src="/lib/expect/sinon-expect.js"></script>
   <script type="text/javascript" src="/lib/mocha/mocha.js"></script>
   <script type="text/javascript">
-    mocha.setup('bdd');
+    expect = SinonExpect.enhance(expect, sinon, 'was');
+    mocha.setup({
+      ui: 'bdd',
+      ignoreLeaks: true
+    });
   </script>
 
   {{#each libs}}

@@ -92,7 +92,7 @@ module.exports = function() {
 
 		//TODO call hooks
 
-		var command = '../node_modules/.bin/mocha-phantomjs';
+		var command = path.join(__dirname, '../node_modules/.bin/mocha-phantomjs');
 		var args = [
 			'http://localhost:3005/projects/' + conf.project + '/SpecRunner.html'
 		];
