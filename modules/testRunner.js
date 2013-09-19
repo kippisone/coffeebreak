@@ -2,7 +2,8 @@ var log = require('xqnode-logger'),
 	Mocha = require('mocha'),
 	glob = require('glob'),
 	path = require('path'),
-	spawn = require('child_process').spawn;
+	spawn = require('child_process').spawn,
+	coffeeBreak = require('./coffeeBreak');
 
 module.exports = function() {
 	// "use strict";
@@ -51,12 +52,24 @@ module.exports = function() {
 	 */
 	TestRunner.prototype.runOne = function(conf, callback) {
 		log.dev('Run new test: ', conf);
-		if (conf.browser) {
-			this.runBrowserTests(conf, callback);
-		}
-		else {
-			this.runCLITests(conf, callback);			
-		}
+
+		var runTests = function() {
+			if (conf.browser) {
+				this.runBrowserTests(conf, callback);
+			}
+			else {
+				this.runCLITests(conf, callback);			
+			}
+		}.bind(this);
+
+		this.coffeeBreak.runTasks('preprocessor', conf, function(err, state) {
+			if (err) {
+				process.stdout.write('\n  \033[1;4;38;5;246mPreprocessor task failed! Skipping test run\033[m\n\n');
+				return;
+			}
+
+			runTests();
+		});
 	};
 
 	/**
@@ -111,6 +124,18 @@ module.exports = function() {
 		  console.log('child process exited with code ' + code);
 		  callback(null);
 		});
+	};
+
+	/**
+	 * Run a preprocessor
+	 *
+	 * @method runPreprocessor
+	 * @param {Object} conf Project configuration object
+	 * @param {Function} callback Callback function
+	 */
+	TestRunner.prototype.runPreprocessor = function(conf, callback) {
+		log.dev('Run preprocessor', conf.preprocessor);
+		
 	};
 
 	return TestRunner;

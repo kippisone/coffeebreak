@@ -13,6 +13,9 @@ module.exports = function() {
 	var CoffeeBreak = function() {
 
 		this.testRunner = new TestRunner();
+		this.testRunner.coffeeBreak = this;
+
+		this.__tasks = {};
 	};
 
 	extend(CoffeeBreak.prototype, EventEmitter.prototype);
@@ -124,6 +127,52 @@ module.exports = function() {
 			project.files.forEach(addWatch.bind(this));
 			project.tests.forEach(addWatch.bind(this));
 		}
+	};
+
+	/**
+	 * Register a task
+	 *
+	 * @method registerTask
+	 * @param {String} task Task name
+	 */
+	CoffeeBreak.prototype.registerTask = function(task, taskFunc) {
+		if (['preprocessor'].indexOf(task) === -1) {
+			log.warn('Unknown task name ' + task);
+			return;
+		}
+
+		if (!this.__tasks['preprocessor']) {
+			this.__tasks['preprocessor'] = [];
+		}
+
+		this.__tasks['preprocessor'].push(taskName);
+	};
+
+	/**
+	 * Run all registered tasks
+	 *
+	 * @method runTasks
+	 * @param {String} task Task name
+	 * @param {Object} conf Conf object
+	 * @param {Function} callback Callback function
+	 */
+	CoffeeBreak.prototype.runTasks = function(task, conf, callback) {
+		if (!this.__tasks[task]) {
+			log.dev('No ' + task + ' tasks defined');
+			callback(null, true);
+			return;
+		}
+
+		async.applyEachSeries(this.__tasks[task], conf, log, function(err, result) {
+			if (err) {
+				log.warn('An error occurs in ' + task + ' task! Skipping ...', err);
+				callback(err);
+			}
+			else {
+				log.dev('All ' + task + ' tasks hav been done!', result);
+				callback(null, true);
+			}
+		});
 	};
 
 	/**
