@@ -14,6 +14,8 @@ module.exports = function() {
 		.option('-p', '--port', 'Set server port', '3005')
 		.command('server')
 		.description('Start the server without running tests')
+		.command('ci')
+		.description('Continious integration mode. Start server, run all tests and shut the server down');
 
 	program.on('--help', function() {
 		coffeeBreak.printStatus();
@@ -30,18 +32,30 @@ module.exports = function() {
 	}
 
 	var args = process.argv.slice(2);
-	var command = args[0] || null;
+	var command = args[0] || null,
+		app;
 
 	if (command === 'server') {
-		var app = expressServer.start();
+		app = expressServer.start();
 		app.coffeeBreak = coffeeBreak;
-		// coffeeBreak.scanProject(function(err, conf) {
-		// 	log.sys('Server started successful');
-		// });
+		coffeeBreak.scanProject(function(err, conf) {
+			log.sys('Server started successful');
+		});
 
 		process.on('SIGINT', function() {
 			expressServer.stop();
 			process.exit();
+		});
+	}
+	else if(command === 'ci') {
+		app = expressServer.start();
+		app.coffeeBreak = coffeeBreak;
+		coffeeBreak.scanProject(function(err, conf) {
+			coffeeBreak.runTests(function() {
+				console.log('ERR:', err);
+				console.log('STATE:', status);
+				expressServer.stop();
+			});
 		});
 	}
 	else {

@@ -1,0 +1,2 @@
+- only one watcher per file (per project)
+- component-builder-task lookup for plugins (--use arg)

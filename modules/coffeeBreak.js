@@ -34,8 +34,8 @@ module.exports = function() {
 			if (this.wachEnabled) {
 				process.stdin.resume();
 				this.watch();
-				this.on('file.changed', function(file) {
-					this.runTests();
+				this.on('file.changed', function(file, projectName) {
+					this.runTests(projectName);
 				}.bind(this));
 
 				this.on('stop', function() {
@@ -48,15 +48,24 @@ module.exports = function() {
 
 	};
 
-	CoffeeBreak.prototype.runTests = function(projectName) {
+	CoffeeBreak.prototype.runTests = function(projectName, callback) {
+		if (typeof projectName === 'function') {
+			callback = projectName;
+			projectName = null;
+		}
+
 		if (projectName) {
 			this.testRunner.runOne(this.projects[projectName], function(err, result) {
-
+				if (typeof callback === 'function') {
+					callback(err, result);
+				}
 			});
 		}
 		else {
 			this.testRunner.run(this.projects, function(err, result) {
-				
+				if (typeof callback === 'function') {
+					callback(err, result);
+				}
 			});
 		}
 	};
@@ -104,12 +113,14 @@ module.exports = function() {
 	 */
 	CoffeeBreak.prototype.watch = function(callback) {
 		var addWatch = function(file) {
+			var projectName = project.project;
+			
 			file = path.join(project.cwd, file);
 			log.dev('Watch file for changes: ' + file + ' in project:' + project.project);
 
 			fs.watchFile(file, function() {
-				log.info('File was changed: ' + file);
-				this.emit('file.changed', file, project);
+				log.info('File was changed: ' + file + ' of project ' + projectName);
+				this.emit('file.changed', file, projectName);
 			}.bind(this));
 
 			// var watcher = fs.watch(project.cwd, function (event, filename) {
