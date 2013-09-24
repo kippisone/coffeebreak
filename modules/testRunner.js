@@ -24,13 +24,13 @@ module.exports = function() {
 	 * @param {Function} callback Callback function
 	 */
 	TestRunner.prototype.run = function(projectConf, callback) {
-		var runNext = function() {
+		var runNext = function(err, statusCode) {
 			var next = this.queue.shift();
-			if (next) {
+			if (next && statusCode === 0) {
 				this.runOne(next, runNext);
 			}
 			else {
-				callback();
+				callback(err, statusCode);
 			}
 		}.bind(this);
 
@@ -40,7 +40,7 @@ module.exports = function() {
 			this.queue.push(conf);
 		}
 
-		runNext();
+		runNext(null, 0);
 	};
 
 	/**
@@ -61,7 +61,7 @@ module.exports = function() {
 			}
 		}.bind(this);
 
-		console.log('Task runner', this.taskRunner);
+		// console.log('Task runner', this.taskRunner);
 		this.taskRunner.runTasks('preprocessor', conf, function(err, state) {
 			if (err) {
 				process.stdout.write('\n  \033[1;4;38;5;246mPreprocessor task failed! Skipping test run\033[m\n\n');
@@ -110,19 +110,20 @@ module.exports = function() {
 			'http://localhost:3005/projects/' + conf.project + '/SpecRunner.html'
 		];
 
-		console.log('Run with command:', command, args);
+		// console.log('Run with command:', command, args);
 		var child = spawn(command, args);
 		child.stdout.on('data', function (data) {
 		  process.stdout.write(data);
 		});
 
 		child.stderr.on('data', function (data) {
-		  console.log('stderr: ' + data);
+		  // console.log('stderr: ' + data);
 		});
 
 		child.on('close', function (code) {
-		  console.log('child process exited with code ' + code);
-		  callback(null);
+		  // console.log('child process exited with code ' + code);
+		  statusCode = code === 0 ? true : false;
+		  callback(null, statusCode);
 		});
 	};
 

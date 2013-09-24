@@ -52,11 +52,11 @@ module.exports = function() {
 		app.coffeeBreak = coffeeBreak;
 		coffeeBreak.scanProject(function(err, conf) {
 			coffeeBreak.runTests(function(err, status) {
-				console.log('ERR:', err);
-				console.log('STATE:', status);
+				// console.log('ERR:', err);
+				// console.log('STATE:', status);
 				expressServer.stop();
 
-				var exitCode = err ? 1 : 0;
+				var exitCode = err ? 1 : status;
 				process.exit(exitCode);
 			});
 		});
