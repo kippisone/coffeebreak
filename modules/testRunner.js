@@ -9,11 +9,11 @@ module.exports = function() {
 	var TestRunner = function() {
 		this.mocha = new Mocha({
 			ui: 'bdd',
-    		reporter: 'list'
-    	});
+			reporter: 'list'
+		});
 
-    	this.queue = [];
-    	this.isRunning = false;
+		this.queue = [];
+		this.isRunning = false;
 	};
 
 	/**
@@ -26,7 +26,7 @@ module.exports = function() {
 	TestRunner.prototype.run = function(projectConf, callback) {
 		var runNext = function(err, statusCode) {
 			var next = this.queue.shift();
-			if (next && statusCode === 0) {
+			if (next && statusCode === true) {
 				this.runOne(next, runNext);
 			}
 			else {
@@ -40,7 +40,7 @@ module.exports = function() {
 			this.queue.push(conf);
 		}
 
-		runNext(null, 0);
+		runNext(null, true);
 	};
 
 	/**
@@ -113,17 +113,17 @@ module.exports = function() {
 		// console.log('Run with command:', command, args);
 		var child = spawn(command, args);
 		child.stdout.on('data', function (data) {
-		  process.stdout.write(data);
+			process.stdout.write(data);
 		});
 
 		child.stderr.on('data', function (data) {
-		  // console.log('stderr: ' + data);
+			// console.log('stderr: ' + data);
 		});
 
 		child.on('close', function (code) {
-		  // console.log('child process exited with code ' + code);
-		  statusCode = code === 0 ? true : false;
-		  callback(null, statusCode);
+			// console.log('child process exited with code ' + code);
+			statusCode = code === 0 ? true : false;
+			callback(null, statusCode);
 		});
 	};
 

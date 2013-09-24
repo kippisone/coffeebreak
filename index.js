@@ -56,7 +56,7 @@ module.exports = function() {
 				// console.log('STATE:', status);
 				expressServer.stop();
 
-				var exitCode = err ? 1 : status;
+				var exitCode = err ? 1 : status ? 0 : 1;
 				process.exit(exitCode);
 			});
 		});
