@@ -10,10 +10,15 @@ module.exports = function() {
 	program
 		.version(pkg.version)
 		.usage('[command] [options]')
-		.option('-d', '--dev', 'Run in debug mode')
-		.option('-p', '--port', 'Set server port', '3005')
+		.option('-d, --dev', 'Run in debug mode')
+		.option('-p, --port', 'Set server port', '3005')
+		.option('-c, --coverage', 'Enable code coverage');
+
+	program
 		.command('server')
-		.description('Start the server without running tests')
+		.description('Start the server without running tests');
+
+	program
 		.command('ci')
 		.description('Continious integration mode. Start server, run all tests and shut the server down');
 
@@ -24,7 +29,7 @@ module.exports = function() {
 	program.parse(process.argv);
 
 	//Set debug mode
-	if (program.dev || process.argv[1] === 'scoffeebreak-dev') {
+	if (program.dev) {
 		log.setLevel('debug');
 	}
 	else {
@@ -63,6 +68,8 @@ module.exports = function() {
 	}
 	else {
 		//coffeeBreak.printStatus();
+		app = expressServer.start();
+		app.coffeeBreak = coffeeBreak;
 		coffeeBreak.start();
 	}
 };

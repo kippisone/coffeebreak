@@ -25,7 +25,7 @@ module.exports = function() {
 	 * @param {String} task Task name
 	 */
 	TaskRunner.prototype.registerTask = function(task, taskFunc) {
-		if (['preprocessor'].indexOf(task) === -1) {
+		if (['preprocessor', 'codecoverage', 'testrunner'].indexOf(task) === -1) {
 			log.warn('Unknown task name ' + task);
 			return;
 		}

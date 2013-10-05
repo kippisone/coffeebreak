@@ -11,6 +11,24 @@ var glob = require('glob'),
  */
 module.exports = function() {
 	// "use strict";
+
+	var CoffeeBreakProject = function() {
+		this.watchIgnore = '(build|dev-build|tmp)/';
+	};
+
+	CoffeeBreakProject.prototype.unwatch = function(file) {
+		log.dev('Unwatch file: ' + file);
+		
+		var index = this.watch.indexOf(file);
+		if (index) {
+			this.watch.splice(index, 1);
+			fs.unwatchFile(path.join(this.cwd, file));
+			log.dev('... done!');
+		}
+		else {
+			log.dev('... noting to unwatch!');
+		}
+	};
 	
 	/**
 	 * @class ProjectScanner
@@ -18,6 +36,8 @@ module.exports = function() {
 	var ProjectScanner = function() {
 		this.projects = {};
 		this.files = [];
+		this.baseProject = {
+		};
 	};
 
 	/**
@@ -38,6 +58,7 @@ module.exports = function() {
 				var project = fs.readFileSync(path.join(dir, file));
 				if (project) {
 					project = JSON.parse(project);
+					// project = extend(new CoffeeBreakProject(), project);
 					
 					var projectDir = path.dirname(path.join(dir, file)),
 						projectDirName = project.project.replace(/[^a-zA-Z0-9_-]/g, '');
@@ -56,7 +77,8 @@ module.exports = function() {
 					}
 
 					this.projects[project.project].cwd = projectDir;
-					this.projects[project.project] = extend(true, project, this.projects[project.project]);
+					var cbProject = new CoffeeBreakProject();
+					this.projects[project.project] = extend(true, cbProject, project, this.projects[project.project]);
 				}
 			}.bind(this));
 

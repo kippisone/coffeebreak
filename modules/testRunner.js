@@ -51,6 +51,7 @@ module.exports = function() {
 	 */
 	TestRunner.prototype.runOne = function(conf, callback) {
 		log.dev('Run new test: ', conf);
+		var isCodeCoverageEnabled = this.coffeeBreak.isCodeCoverageEnabled;
 
 		var runTests = function() {
 			if (conf.browser) {
@@ -65,10 +66,24 @@ module.exports = function() {
 		this.taskRunner.runTasks('preprocessor', conf, function(err, state) {
 			if (err) {
 				process.stdout.write('\n  \033[1;4;38;5;246mPreprocessor task failed! Skipping test run\033[m\n\n');
+				callback(err);
 				return;
 			}
 
-			runTests();
+			if (isCodeCoverageEnabled) {
+				this.taskRunner.runTasks('codecoverage', conf, function(err, state) {
+					if (err) {
+						process.stdout.write('\n  \033[1;4;38;5;246mPreprocessor task failed! Skipping test run\033[m\n\n');
+						callback(err);
+						return;
+					}
+
+					runTests();
+				});
+			}
+			else {
+				runTests();
+			}
 		});
 	};
 
@@ -125,18 +140,6 @@ module.exports = function() {
 			statusCode = code === 0 ? true : false;
 			callback(null, statusCode);
 		});
-	};
-
-	/**
-	 * Run a preprocessor
-	 *
-	 * @method runPreprocessor
-	 * @param {Object} conf Project configuration object
-	 * @param {Function} callback Callback function
-	 */
-	TestRunner.prototype.runPreprocessor = function(conf, callback) {
-		log.dev('Run preprocessor', conf.preprocessor);
-		
 	};
 
 	return TestRunner;

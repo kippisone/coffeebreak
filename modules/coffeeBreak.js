@@ -6,7 +6,8 @@ var ProjectScanner = require('./projectScanner'),
 	extend = require('node.extend'),
 	log = require('xqnode-logger'),
 	fs = require('fs'),
-	path = require('path');
+	path = require('path'),
+	minimatch = require('minimatch');
 
 module.exports = function() {
 	// "use strict";
@@ -114,12 +115,23 @@ module.exports = function() {
 	CoffeeBreak.prototype.watch = function(callback) {
 		var addWatch = function(file) {
 			var projectName = project.project;
+
+			if (minimatch(file, project.watchIgnore)) {
+				log.dev('File is in watchIgnore: ' + file + ' in project:' + project.project);
+				return false;
+			}
+
+			if (project.watch.indexOf(file) !== -1) {
+				log.dev('File has allready a watcher: ' + file + ' in project:' + project.project);
+				return;
+			}
 			
+			project.watch.push(file);
 			file = path.join(project.cwd, file);
 			log.dev('Watch file for changes: ' + file + ' in project:' + project.project);
 
 			fs.watchFile(file, function() {
-				log.info('File was changed: ' + file + ' of project ' + projectName);
+				log.sys('File was changed: ' + file + ' of project ' + projectName);
 				this.emit('file.changed', file, projectName);
 			}.bind(this));
 
@@ -139,6 +151,7 @@ module.exports = function() {
 		for (var p in this.projects) {
 			var project = this.projects[p];
 			var watchFiles = project.watch || project.files;
+			project.watch = [];
 			watchFiles.forEach(addWatch.bind(this));
 			project.tests.forEach(addWatch.bind(this));
 		}
