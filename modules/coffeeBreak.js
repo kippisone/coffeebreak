@@ -134,20 +134,8 @@ module.exports = function() {
 				log.sys('File was changed: ' + file + ' of project ' + projectName);
 				this.emit('file.changed', file, projectName);
 			}.bind(this));
-
-			// var watcher = fs.watch(project.cwd, function (event, filename) {
-			// 	if (filename) {
-			// 		console.log('  Change of type ' + event + ' on file: ' + filename);
-			// 	} else {
-			// 		console.log('filename not provided');
-			// 	}
-			// });
-
-			// watcher.on('change', function() {
-			// 	log.dev('Got watcher.change', arguments);
-			// });
 		};
-		//this.projects.forEach(function(project) {
+		
 		for (var p in this.projects) {
 			var project = this.projects[p];
 			var watchFiles = project.watch || project.files;

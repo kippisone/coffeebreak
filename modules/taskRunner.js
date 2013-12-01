@@ -16,6 +16,7 @@ module.exports = function() {
 	 */
 	TaskRunner.prototype.loadTasks = function() {
 		require('coffeebreak-component-build')(this);
+		require('coffeebreak-grunt-task')(this);
 	};
 
 	/**
