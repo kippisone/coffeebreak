@@ -130,9 +130,15 @@ module.exports = function() {
 			file = path.join(project.cwd, file);
 			log.dev('Watch file for changes: ' + file + ' in project:' + project.project);
 
-			fs.watchFile(file, function() {
-				log.sys('File was changed: ' + file + ' of project ' + projectName);
-				this.emit('file.changed', file, projectName);
+			var options = {
+				interval: 250
+			};
+
+			fs.watchFile(file, options, function(curr, prev) {
+				if (curr.mtime > prev.mtime) {
+					log.sys('File was changed: ' + file + ' of project ' + projectName);
+					this.emit('file.changed', file, projectName);
+				}
 			}.bind(this));
 		};
 		
