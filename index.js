@@ -43,6 +43,7 @@ module.exports = function() {
 	if (command === 'server') {
 		app = expressServer.start();
 		app.coffeeBreak = coffeeBreak;
+		coffeeBreak.codeCoverage = program.coverage;
 		coffeeBreak.scanProject(function(err, conf) {
 			log.sys('Server started successful');
 		});
@@ -55,6 +56,7 @@ module.exports = function() {
 	else if(command === 'ci') {
 		app = expressServer.start();
 		app.coffeeBreak = coffeeBreak;
+		coffeeBreak.codeCoverage = program.coverage;
 		coffeeBreak.scanProject(function(err, conf) {
 			coffeeBreak.runTests(function(err, status) {
 				// console.log('ERR:', err);

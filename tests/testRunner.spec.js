@@ -14,8 +14,8 @@ var testRunner;
 
 	});
 
-	it('Should run a node test', function(done) {
-		var execStub = sinon.stub(testRunner, 'exec');
+	xit('Should run a node test', function(done) {
+		var execStub = sinon.stub(testRunner, 'runOne');
 		execStub.yields(null, 'done', '');
 		testRunner.run({
 			project: 'Test Mobule',

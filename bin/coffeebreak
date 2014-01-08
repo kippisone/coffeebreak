@@ -1,2 +1,38 @@
 #!/usr/bin/env node
-require('../index.js')();
+'use strict';
+
+var program = require('commander'),
+	log = require('xqnode-logger');
+
+var	pkg = require('../package.json'),
+	coffeeBreak = require('../coffeeBreak');
+
+
+program
+	.version(pkg.version)
+	.usage('[command] [options]')
+	.option('-d, --dev', 'Run in debug mode')
+	.option('-p, --port', 'Set server port', '3005')
+	.option('-c, --coverage', 'Enable code coverage');
+
+program
+	.command('server')
+	.description('Start the server without running tests');
+
+program
+	.command('ci')
+	.description('Continious integration mode. Start server, run all tests and shut the server down');
+
+program.on('--help', function() {
+	coffeeBreak.printStatus();
+});
+
+program.parse(process.argv);
+
+//Set debug mode
+if (program.dev) {
+	log.setLevel('debug');
+}
+else {
+	log.setLevel('sys');
+}

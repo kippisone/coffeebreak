@@ -51,7 +51,7 @@ module.exports = function() {
 	 */
 	TestRunner.prototype.runOne = function(conf, callback) {
 		log.dev('Run new test: ', conf);
-		var isCodeCoverageEnabled = this.coffeeBreak.isCodeCoverageEnabled;
+		var isCodeCoverageEnabled = this.coffeeBreak.codeCoverage;
 
 		var runTests = function() {
 			if (conf.browser) {
