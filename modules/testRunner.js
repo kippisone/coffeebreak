@@ -84,7 +84,7 @@ module.exports = function() {
 			else {
 				runTests();
 			}
-		});
+		}.bind(this));
 	};
 
 	/**

@@ -1,44 +1,13 @@
 var program = require('commander'),
 	log = require('xqnode-logger'),
-	coffeeBreak = require('./modules/coffeeBreak'),
-	expressServer = require('./modules/expressServer'),
-	pkg = require('./package.json');
+	CoffeeBreak = require('./modules/coffeeBreak'),
+	expressServer = require('./modules/expressServer');
 
-module.exports = function() {
+module.exports = function(command, options) {
 	"use strict";
 
-	program
-		.version(pkg.version)
-		.usage('[command] [options]')
-		.option('-d, --dev', 'Run in debug mode')
-		.option('-p, --port', 'Set server port', '3005')
-		.option('-c, --coverage', 'Enable code coverage');
-
-	program
-		.command('server')
-		.description('Start the server without running tests');
-
-	program
-		.command('ci')
-		.description('Continious integration mode. Start server, run all tests and shut the server down');
-
-	program.on('--help', function() {
-		coffeeBreak.printStatus();
-	});
-
-	program.parse(process.argv);
-
-	//Set debug mode
-	if (program.dev) {
-		log.setLevel('debug');
-	}
-	else {
-		log.setLevel('sys');
-	}
-
-	var args = process.argv.slice(2);
-	var command = args[0] || null,
-		app;
+	var app,
+		coffeeBreak = new CoffeeBreak(options);
 
 	if (command === 'server') {
 		app = expressServer.start();
@@ -68,10 +37,13 @@ module.exports = function() {
 			});
 		});
 	}
-	else {
+	else if (command === 'default') {
 		//coffeeBreak.printStatus();
 		app = expressServer.start();
 		app.coffeeBreak = coffeeBreak;
 		coffeeBreak.start();
+	}
+	else {
+		coffeeBreak.printStatus();
 	}
 };

@@ -5,7 +5,7 @@ var program = require('commander'),
 	log = require('xqnode-logger');
 
 var	pkg = require('../package.json'),
-	coffeeBreak = require('../coffeeBreak');
+	coffeeBreak = require('../index');
 
 
 program
@@ -24,7 +24,7 @@ program
 	.description('Continious integration mode. Start server, run all tests and shut the server down');
 
 program.on('--help', function() {
-	coffeeBreak.printStatus();
+	coffeeBreak('status');
 });
 
 program.parse(process.argv);
@@ -35,4 +35,21 @@ if (program.dev) {
 }
 else {
 	log.setLevel('sys');
+}
+
+var command = program.args[0];
+
+var options = {
+	coverage: program.coverage,
+	debug: program.debug
+};
+
+if (command === 'server') {
+	coffeeBreak('server', options);
+}
+else if (command === 'ci') {
+	coffeeBreak('ci', options);
+}
+else {
+	coffeeBreak('default', options);
 }

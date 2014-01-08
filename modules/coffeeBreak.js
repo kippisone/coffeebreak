@@ -12,7 +12,7 @@ var ProjectScanner = require('./projectScanner'),
 module.exports = function() {
 	// "use strict";
 
-	var CoffeeBreak = function() {
+	var CoffeeBreak = function(options) {
 
 		this.taskRunner = new TaskRunner();
 		this.taskRunner.coffeeBreak = this;
@@ -20,6 +20,8 @@ module.exports = function() {
 		this.testRunner = new TestRunner();
 		this.testRunner.coffeeBreak = this;
 		this.testRunner.taskRunner = this.taskRunner;
+
+		this.codeCoverage = options.coverage;
 	};
 
 	extend(CoffeeBreak.prototype, EventEmitter.prototype);
@@ -176,5 +178,5 @@ module.exports = function() {
 
 	};
 
-	return new CoffeeBreak();
+	return CoffeeBreak;
 }();
