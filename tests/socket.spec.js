@@ -81,4 +81,63 @@ describe.only('Socket', function() {
 			expect(closeStub).was.calledThrice();
 		});
 	});
+
+	describe('emit', function() {
+		var instance;
+
+		beforeEach(function() {
+			instance = new Socket();
+		});
+
+		it('Should send a message to all connected clients', function() {
+			var writeStub = sinon.stub();
+			
+			instance.connections = [
+				{ write: writeStub },
+				{ write: writeStub },
+				{ write: writeStub }
+			];
+
+			instance.emit('test', {
+				command:'test.start'
+			});
+
+			expect(writeStub).was.calledThrice();
+			expect(writeStub).was.alwaysCalledWith({
+				eventName: 'test',
+				data: {command: 'test.start'}
+			});
+		});
+	});
+
+	xdescribe('on', function() {
+		var instance;
+
+		beforeEach(function() {
+			instance = new Socket();
+		});
+
+		it('Should send a message to all connected clients', function() {
+			var _emitStub = sinon.stub(object, '_emit'),
+				onStub = sinon.stub();
+			
+			instance.connections = [
+				{ on: onStub },
+				{ on: onStub },
+				{ on: onStub }
+			];
+
+			instance.connections[0].on('test', {
+				command:'test.start'
+			});
+
+			expect(writeStub).was.calledThrice();
+			expect(writeStub).was.alwaysCalledWith({
+				eventName: 'test',
+				data: {command: 'test.start'}
+			});
+
+			_emitStub.restore();
+		});
+	});
 });

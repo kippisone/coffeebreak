@@ -7,31 +7,33 @@ var ProjectScanner = require('./projectScanner'),
 	log = require('xqnode-logger'),
 	fs = require('fs'),
 	path = require('path'),
-	minimatch = require('minimatch');
+	minimatch = require('minimatch'),
+	Socket = require('./socket');
 
 module.exports = function() {
 	// "use strict";
 
-	var CoffeeBreak = function(options) {
+	var coffeeBreak = {
 
-		this.taskRunner = new TaskRunner();
-		this.taskRunner.coffeeBreak = this;
-
-		this.testRunner = new TestRunner();
-		this.testRunner.coffeeBreak = this;
-		this.testRunner.taskRunner = this.taskRunner;
-
-		this.codeCoverage = options.coverage;
 	};
+	
+	coffeeBreak.taskRunner = new TaskRunner();
+	coffeeBreak.taskRunner.coffeeBreak = coffeeBreak;
 
-	extend(CoffeeBreak.prototype, EventEmitter.prototype);
+	coffeeBreak.testRunner = new TestRunner();
+	coffeeBreak.testRunner.coffeeBreak = coffeeBreak;
+	coffeeBreak.testRunner.taskRunner = coffeeBreak.taskRunner;
+
+	coffeeBreak.socket = new Socket();
+
+	extend(coffeeBreak, EventEmitter.prototype);
 
 	/**
 	 * Start coffeebreak
 	 *
 	 * @method start
 	 */
-	CoffeeBreak.prototype.start = function() {
+	coffeeBreak.start = function() {
 		this.scanProject(function() {
 			this.wachEnabled = true;
 			if (this.wachEnabled) {
@@ -51,7 +53,7 @@ module.exports = function() {
 
 	};
 
-	CoffeeBreak.prototype.runTests = function(projectName, callback) {
+	coffeeBreak.runTests = function(projectName, callback) {
 		if (typeof projectName === 'function') {
 			callback = projectName;
 			projectName = null;
@@ -79,7 +81,7 @@ module.exports = function() {
 	 * @method getPublicConf
 	 * @return {Object} Public project configuration
 	 */
-	CoffeeBreak.prototype.getPublicConf = function() {
+	coffeeBreak.getPublicConf = function() {
 		var conf = [];
 
 		for (var p in this.projects) {
@@ -98,7 +100,7 @@ module.exports = function() {
 	 * @method scanProject
 	 * @param {Function} callback Callback function
 	 */
-	CoffeeBreak.prototype.scanProject = function(callback) {
+	coffeeBreak.scanProject = function(callback) {
 		var projectScanner = new ProjectScanner();
 		projectScanner.scan(process.cwd(), function(err, projectConf) {
 			this.projects = projectScanner.projects;
@@ -114,7 +116,7 @@ module.exports = function() {
 	 * @method watch
 	 * @param {Function} callback Callback function
 	 */
-	CoffeeBreak.prototype.watch = function(callback) {
+	coffeeBreak.watch = function(callback) {
 		var addWatch = function(file) {
 			var projectName = project.project;
 
@@ -158,7 +160,7 @@ module.exports = function() {
 	 *
 	 * @method printStatus
 	 */
-	CoffeeBreak.prototype.printStatus = function() {
+	coffeeBreak.printStatus = function() {
 		var bean = '';
 		bean += '                              ____       __  __           _                    _    \n';
 		bean += '   .⎼⎼⎼⎼⎼⎼⎼.                 / ___|___  / _|/ _| ___  ___| |__  _ __ ___  __ _| | __\n';
@@ -178,5 +180,5 @@ module.exports = function() {
 
 	};
 
-	return CoffeeBreak;
+	return coffeeBreak;
 }();

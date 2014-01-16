@@ -12,5 +12,6 @@
   "eqeqeq": true,
   "undef": true,
   "unused":"vars",
-  "node": true
+  "node": true,
+  "browser": true
 }

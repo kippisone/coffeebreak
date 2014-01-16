@@ -20,24 +20,37 @@ module.exports = function() {
 
 	util.inherits(Socket, events.EventEmitter);
 
-	Socket.prototype.start = function(conf) {
-		log.sys('Start SocketServer on port ' + conf.port);
+	Socket.prototype.start = function() {
+		log.sys('Start SocketServer on port ' + this.port);
 
 		sockjsServer = sockjs.createServer();
 		sockjsServer.on('connection', function(conn) {
+			// console.log('New connection', conn);
+
 			conn.on('data', function(message) {
-				// conn.write(message);
-				console.log('message ' + conn, message);
-			});
+				log.sys('Recive socket message:', message);
+				message = JSON.parse(message);
+				this.__emit(message.eventName, message.data);
+			}.bind(this));
+			
 			conn.on('close', function() {
-				console.log('Close socket connection');
-			});
-		});
+				log.sys('Close socket connection', conn);
+
+				for (var i = 0, len = this.connections.length; i < len; i++) {
+					if (this.connections[i] === conn) {
+						this.connections.splice(i, 1);
+						break;
+					}
+				}
+			}.bind(this));
+		}.bind(this));
 
 		var server = http.createServer();
 		sockjsServer.installHandlers(server, {prefix:'/cb'});
 		server.listen(this.port, this.host);
 	};
+
+	Socket.prototype.__emit = Socket.prototype.emit;
 
 	Socket.prototype.stop = function() {
 		log.sys('Stop SocketServer');
@@ -49,6 +62,15 @@ module.exports = function() {
 		this.connections = [];
 
 		log.sys('  ' + numClients + ' disconnected');
+	};
+
+	Socket.prototype.emit = function(eventName, data) {
+		this.connections.forEach(function(conn) {
+			conn.write({
+				eventName: eventName,
+				data: data
+			});
+		});
 	};
 
 	return Socket;
