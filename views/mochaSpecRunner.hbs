@@ -7,11 +7,13 @@
   <link rel="stylesheet" type="text/css" href="/lib/coffeebreak/styles.css">
 
   <script type="text/javascript" src="/lib/jquery.min.js"></script>
-  {{!-- <script type="text/javascript" src="/lib/coffeebreak/coffeebreak.js"></script> --}}
+  <script type="text/javascript" src="/lib/coffeebreak/sockjs.min.js"></script>
+  <script type="text/javascript" src="/lib/coffeebreak/socket.js"></script>
   <script type="text/javascript" src="/lib/sinon/sinon.js"></script>
   <script type="text/javascript" src="/lib/expect/expect.js"></script>
   <script type="text/javascript" src="/lib/expect/sinon-expect.js"></script>
   <script type="text/javascript" src="/lib/mocha/mocha.js"></script>
+  <script type="text/javascript" src="/lib/coffeebreak/mocha-runner.js"></script>
   <script type="text/javascript">
     expect = SinonExpect.enhance(expect, sinon, 'was');
     mocha.setup({
@@ -28,24 +30,6 @@
 
   {{#each tests}}
     <script type="text/javascript" src="{{this}}"></script>{{/each}}
-
-
-  <script type="text/javascript">
-    window.onload = function() {
-      if (window.mochaPhantomJS) {
-        mochaPhantomJS.run();
-      }
-      else {
-        
-        var runner = mocha.run();
-        console.log('Runner obj:', runner);
-
-        runner.on('end', function(test){
-          console.log('Test obj:', test);
-        });
-      }
-    };
-  </script>
 </head>
 <body id="testRunner">
 <header id="coffeeBreakHeader"></header>
