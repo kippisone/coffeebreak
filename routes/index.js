@@ -32,21 +32,20 @@ module.exports = function(app) {
 		
 	});
 
-	// app.get(/\/projects\/([a-zA-Z0-9_-]+)\/(.*)$/, function(req, res) {
-	// 	var projectName = req.params[0],
-	// 		conf = app.coffeeBreak.projects[projectName],
-	// 		file = path.join(conf.cwd, req.params[1]);
+/*	app.get(/\/projects\/([a-zA-Z0-9_-]+)\/(.*)$/, function(req, res) {
+		var projectName = req.params[0],
+			conf = app.coffeeBreak.projects[projectName],
+			file = path.join(conf.cwd, req.params[1]);
 
-	// 	log.dev('Get file ' + file + '', req.params);
-	// 	res.sendfile(file);
-	// });
+		log.dev('Get file ' + file + '', req.params);
+		res.sendfile(file);
+	});*/
 
 	app.get(/\/projects\/([a-zA-Z0-9_-]+)\/(.*)$/, function(req, res) {
 		var projectName = req.params[0],
 			conf = app.coffeeBreak.projects[projectName],
 			file;
 		
-		console.log('FILE', conf);
 		file = path.join(conf.cwd, req.params[1]);
 		if (conf.cwdInstrumented) {
 			var instrumentedFile = path.join(conf.cwdInstrumented, req.params[1]);
