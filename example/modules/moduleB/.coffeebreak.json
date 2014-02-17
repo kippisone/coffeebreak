@@ -1,3 +1,4 @@
 {
-	"project": "ModuleB"
+	"project": "ModuleB",
+	"files": "moduleb.js"
 }

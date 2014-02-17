@@ -21,7 +21,8 @@ module.exports = function(app) {
 			res.render('mochaSpecRunner', {
 				files: conf.files,
 				tests: conf.tests,
-				project: conf.project
+				project: conf.project,
+				requirejs: conf.requirejs
 			});
 		}
 		else {

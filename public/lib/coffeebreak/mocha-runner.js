@@ -53,6 +53,7 @@
 	};
 
 	window.onload = function() {
+		console.log('Runner start!');
 		if (window.mochaPhantomJS) {
 			mochaPhantomJS.run();
 		}

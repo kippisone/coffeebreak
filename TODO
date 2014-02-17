@@ -1,2 +1,31 @@
-- only one watcher per file (per project)
-- component-builder-task lookup for plugins (--use arg)
+v1.0.0 TODO
+
+  - Add console args
+    * port
+    * project/test case filter
+    
+  - only one watcher per file (per project)
+  - component-builder-task lookup for plugins (--use arg)
+
+
+
+  Components:
+
+  	CLI Starter
+  	Console Args
+  		* port
+  		* project
+  		* grep
+
+  	Server
+  	Scanner
+  	Hook System
+  		* preprocessor
+  		* test runner
+  		* test reporter
+  		* clean
+  		* module loader
+
+  	TestRunner
+  	Dashboard
+  	

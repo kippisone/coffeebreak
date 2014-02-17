@@ -30,6 +30,9 @@
 
   {{#each tests}}
     <script type="text/javascript" src="{{this}}"></script>{{/each}}
+  {{#if requirejs}}
+    <script type="text/javascript" src="/lib/requirejs/require.js" data-main="{{requirejs}}"></script>{{/if}}
+
 </head>
 <body id="testRunner">
 <header id="coffeeBreakHeader"></header>

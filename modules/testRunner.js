@@ -1,8 +1,8 @@
 var log = require('xqnode-logger'),
 	Mocha = require('mocha'),
-	glob = require('glob'),
 	path = require('path'),
-	spawn = require('child_process').spawn;
+	spawn = require('child_process').spawn,
+	extend = require('node.extend');
 
 module.exports = function() {
 	// "use strict";
@@ -104,8 +104,39 @@ module.exports = function() {
 			this.mocha.addFile(path.join(conf.cwd, file));
 		}.bind(this));
 
-		this.mocha.run(function(failures) {
-			callback(failures);
+		var command = path.join(__dirname, '../node_modules/.bin/mocha');
+		
+		var args = [
+			'-R',
+			'list',
+			'--colors'
+		];
+
+		args = args.concat(conf.tests);
+
+		var options = {
+			cwd: conf.cwd,
+			env: extend(process.env, {
+				'NODE_ENV': 'test'
+			})
+		};
+
+		var child = spawn(command, args, options);
+		child.stdout.on('data', function (data) {
+			process.stdout.write(data);
+		});
+
+		child.stderr.on('data', function (data) {
+			process.stdout.write(data);
+		});
+
+		child.on('close', function (code) {
+			if (code) {
+				console.log('Child process exited with code ' + code);
+			}
+
+			statusCode = code === 0 ? true : false;
+			callback(null, statusCode);
 		});
 	};
 
