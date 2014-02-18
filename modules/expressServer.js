@@ -1,6 +1,7 @@
 var log = require('xqnode-logger'),
 	express = require('express'),
-	path = require('path');
+	path = require('path'),
+	coffeeBreak = require('./coffeeBreak');
 
 module.exports = function() {
 	"use strict";
@@ -23,7 +24,7 @@ module.exports = function() {
 		this.app = app;
 
 		var cbconf = {
-			port: 3005
+			port: coffeeBreak.port
 		};
 
 		// app.use(express.logger('dev'));
@@ -61,6 +62,6 @@ module.exports = function() {
 		// app.close();
 	};
 
-	return new ExpressServer();
+	return ExpressServer;
 
 }();

@@ -2,7 +2,7 @@
   "name": "coffeebreak",
   "version": "0.1.0",
   "description": "Test runner for Mocha",
-  "main": "index.js",
+  "main": "coffeeBreak.js",
   "directories": {
     "test": "tests"
   },

@@ -5,15 +5,17 @@ var program = require('commander'),
 	log = require('xqnode-logger');
 
 var	pkg = require('../package.json'),
-	coffeeBreak = require('../index');
+	coffeeBreak = require('../coffeebreak');
 
 
 program
 	.version(pkg.version)
 	.usage('[command] [options]')
 	.option('-d, --dev', 'Run in debug mode')
-	.option('-p, --port', 'Set server port', '3005')
-	.option('-c, --coverage', 'Enable code coverage');
+	.option('-p, --port <port>', 'Set server port', '3005')
+	.option('-c, --coverage', 'Enable code coverage')
+	.option('-r , --project <project>', 'Run only <project>')
+	.option('-i , --diff <match>', 'Test title must match <match>');
 
 program
 	.command('server')
@@ -41,15 +43,17 @@ var command = program.args[0];
 
 var options = {
 	coverage: program.coverage,
-	debug: program.debug
+	debug: program.debug,
+	port: program.port,
+	project: program.project
 };
 
 if (command === 'server') {
-	coffeeBreak('server', options);
+	coffeeBreak.start('server', options);
 }
 else if (command === 'ci') {
-	coffeeBreak('ci', options);
+	coffeeBreak.start('ci', options);
 }
 else {
-	coffeeBreak('default', options);
+	coffeeBreak.start('default', options);
 }

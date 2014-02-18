@@ -1,23 +1,25 @@
 module.exports = function(app) {
-	"use strict";
+	'use strict';
 
 	var fs = require('fs'),
 		path = require('path');
 
 	var log = require('xqnode-logger');
 
+	var cb = require('../coffeebreak');
+
 	app.get('/cbconf.json', function(req, res) {
-		res.json(200, app.coffeeBreak.getPublicConf());
+		res.json(200, cb.coffeeBreak.getPublicConf());
 	});
 	
 	app.get('/projects/:project/SpecRunner.html', function(req, res) {
 		//htmlBuilder.build('mocha-index');
 		var projectName = req.param('project');
 		log.dev('Got request in project ' + projectName, req.path);
-		log.dev('Conf', app.coffeeBreak);
+		log.dev('Conf', cb.coffeeBreak);
 
-		if (app.coffeeBreak.projects[projectName]) {
-			var conf = app.coffeeBreak.projects[projectName];
+		if (cb.coffeeBreak.projects[projectName]) {
+			var conf = cb.coffeeBreak.projects[projectName];
 			res.render('mochaSpecRunner', {
 				files: conf.files,
 				tests: conf.tests,
@@ -35,7 +37,7 @@ module.exports = function(app) {
 
 /*	app.get(/\/projects\/([a-zA-Z0-9_-]+)\/(.*)$/, function(req, res) {
 		var projectName = req.params[0],
-			conf = app.coffeeBreak.projects[projectName],
+			conf = cb.coffeeBreak.projects[projectName],
 			file = path.join(conf.cwd, req.params[1]);
 
 		log.dev('Get file ' + file + '', req.params);
@@ -44,7 +46,7 @@ module.exports = function(app) {
 
 	app.get(/\/projects\/([a-zA-Z0-9_-]+)\/(.*)$/, function(req, res) {
 		var projectName = req.params[0],
-			conf = app.coffeeBreak.projects[projectName],
+			conf = cb.coffeeBreak.projects[projectName],
 			file;
 		
 		file = path.join(conf.cwd, req.params[1]);
@@ -56,7 +58,6 @@ module.exports = function(app) {
 			}
 		}
 
-		console.log('Get file ' + file + '', req.params);
 		log.dev('Get file ' + file + '', req.params);
 		res.sendfile(file);
 	});

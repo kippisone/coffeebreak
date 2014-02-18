@@ -1,0 +1,5 @@
+{
+	"project": "PreprocessorTest",
+	"files": "**/*.js",
+	"tests": "**/*.spce.js"
+}
