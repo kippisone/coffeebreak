@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Projects</title>
+	<link rel="stylesheet" type="text/css" href="/lib/coffeebreak/styles.css">
+</head>
+<body>
+<div class="projectsListing">
+	<h1>Projects:</h1>
+	{{#each projects}}
+		<a href="/projects/{{project}}/SpecRunner.html">{{project}}</a>
+	{{/each}}
+</div>
+</body>
+</html>

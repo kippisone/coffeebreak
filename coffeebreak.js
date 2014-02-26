@@ -3,9 +3,11 @@ module.exports = function() {
 	'use strict';
 
 	var log = require('xqnode-logger'),
-	coffeeBreak = require('./modules/coffeeBreak'),
-	Socket = require('./modules/socket'),
-	ExpressServer = require('./modules/expressServer');
+		ExpressServer = require('express-server');
+
+	var coffeeBreak = require('./modules/coffeeBreak'),
+		Socket = require('./modules/socket'),
+		coffeeBreakApp = require('./modules/app');
 
 	var coffeeBreakServer = {
 
@@ -16,57 +18,70 @@ module.exports = function() {
 		coffeeBreak.onlyProject = options.project || null;
 		coffeeBreak.diff = options.diff || null;
 
-		if (command === 'server') {
-			this.expressServer = new ExpressServer();
-			this.expressServer.start();
+		var conf = {
+			name: 'CoffeeBreak Server',
+			baseDir: __dirname,
+			port: coffeeBreak.port
+		};
 
-			this.coffeeBreak = coffeeBreak;
-			this.socket = new Socket();
-			this.socket.start();
-			coffeeBreak.codeCoverage = options.coverage;
-			coffeeBreak.scanProject(function(err, conf) {
-				log.sys('Server started successful');
+		coffeeBreakApp.coffeeBreak = coffeeBreak;
+
+		if (command === 'server') {
+			coffeeBreakApp.expressServer = new ExpressServer(conf);
+			coffeeBreakApp.expressServer.start({}, function() {
+				// coffeeBreakApp.socket = new Socket();
+				// coffeeBreakApp.socket.start();
+				// coffeeBreakApp.coffeeBreak = coffeeBreak;
+				// coffeeBreak.start();
+				coffeeBreakApp.coffeeBreak = coffeeBreak;
+				coffeeBreakApp.socket = new Socket();
+				coffeeBreakApp.socket.start();
+				coffeeBreak.codeCoverage = options.coverage;
+				coffeeBreak.scanProject(function(err, conf) {
+					log.sys('Server started successful');
+				});
 			});
 
+
 			process.on('SIGINT', function() {
-				this.expressServer.stop();
-				this.socket.stop();
+				coffeeBreakApp.expressServer.stop();
+				coffeeBreakApp.socket.stop();
 				process.exit();
-			}.bind(this));
+			});
 		}
 		else if(command === 'ci') {
-			this.expressServer = new ExpressServer();
-			this.expressServer.start();
+			coffeeBreakApp.expressServer = new ExpressServer(conf);
+			coffeeBreakApp.expressServer.start();
 
-			this.socket = new Socket();
-			this.socket.start();
-			this.coffeeBreak = coffeeBreak;
+			coffeeBreakApp.socket = new Socket();
+			coffeeBreakApp.socket.start();
 			coffeeBreak.codeCoverage = options.coverage;
 			coffeeBreak.scanProject(function(err, conf) {
 				coffeeBreak.runTests(function(err, status) {
-					this.expressServer.stop();
+					coffeeBreakApp.expressServer.stop();
 
 					var exitCode = err ? 1 : status ? 0 : 1;
 					process.exit(exitCode);
-				}.bind(this));
-			}.bind(this));
+				});
+			});
 
-			this.socket.stop();
+			coffeeBreakApp.socket.stop();
 		}
 		else if (command === 'default') {
-			this.expressServer = new ExpressServer();
-			this.expressServer.start();
+			coffeeBreakApp.expressServer = new ExpressServer(conf);
+			coffeeBreakApp.expressServer.start({}, function() {
+				coffeeBreakApp.socket = new Socket();
+				coffeeBreakApp.socket.start();
+				coffeeBreakApp.coffeeBreak = coffeeBreak;
+				coffeeBreak.start();
+			});
 
-			this.socket = new Socket();
-			this.socket.start();
-			this.coffeeBreak = coffeeBreak;
-			coffeeBreak.start();
 
 			process.on('SIGINT', function() {
-				this.socket.stop();
-				this.expressServer.stop();
+				coffeeBreakApp.socket.stop();
+				coffeeBreakApp.expressServer.stop();
 				process.exit();
-			}.bind(this));
+			});
 		}
 		else {
 			coffeeBreak.printStatus();

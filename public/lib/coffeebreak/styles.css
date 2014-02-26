@@ -71,3 +71,32 @@ body {
 #mocha {
 	line-height: 1.5;
 }
+
+.projectsListing {
+	background-color: #ddd;
+	border-radius: 7px;
+	padding: 10px;
+	width: 300px;
+}
+
+.projectsListing h1 {
+	color: #555;
+	margin: 0 0 10px 0;
+	font-size: 30px;
+}
+
+.projectsListing a:link,
+.projectsListing a:visited {
+	text-decoration: none;
+	color: #222;
+	display: block;
+	padding: 2px 5px;
+	margin-bottom: 3px;
+}
+
+.projectsListing a:hover {
+	display: block;
+	background-color: #0026FF;
+	color: #fff;
+	border-radius: 5px;
+}
