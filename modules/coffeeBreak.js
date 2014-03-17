@@ -1,39 +1,143 @@
+var fs = require('fs'),
+	path = require('path'),
+	EventEmitter = require('events').EventEmitter;
+
+var ExpressServer = require('express-server'),
+	extend = require('node.extend'),
+	log = require('xqnode-logger'),
+	minimatch = require('minimatch');
+
 var ProjectScanner = require('./projectScanner'),
 	pkg = require('../package.json'),
 	TestRunner = require('./testRunner'),
 	TaskRunner = require('./taskRunner'),
-	EventEmitter = require('events').EventEmitter,
-	extend = require('node.extend'),
-	log = require('xqnode-logger'),
-	fs = require('fs'),
-	path = require('path'),
-	minimatch = require('minimatch'),
 	Socket = require('./socket');
 
 module.exports = function() {
 	// "use strict";
 
-	var coffeeBreak = {
-
+	var CoffeeBreak = function() {
+		extend(this, new EventEmitter());
 	};
-	
-	coffeeBreak.taskRunner = new TaskRunner();
-	coffeeBreak.taskRunner.coffeeBreak = coffeeBreak;
 
-	coffeeBreak.testRunner = new TestRunner();
-	coffeeBreak.testRunner.coffeeBreak = coffeeBreak;
-	coffeeBreak.testRunner.taskRunner = coffeeBreak.taskRunner;
+	CoffeeBreak.prototype.init = function(command, options) {
+		command = command || 'default';
+		options = options || {};
 
-	coffeeBreak.socket = new Socket();
+		this.port = options.port || 3005;
+		this.onlyProject = options.project || null;
+		this.diff = options.diff || null;
 
-	extend(coffeeBreak, EventEmitter.prototype);
+		var conf = {
+			name: 'CoffeeBreak Server',
+			baseDir: __dirname,
+			port: this.port
+		};
+
+		this.taskRunner = new TaskRunner();
+		this.taskRunner.coffeeBreak = this;
+
+		this.testRunner = new TestRunner();
+		this.testRunner.coffeeBreak = this;
+		this.testRunner.taskRunner = this.taskRunner;
+
+
+		if (command === 'server') {
+			this.expressServer = new ExpressServer(conf);
+			this.expressServer.start({}, function() {
+				this.app = this.expressServer.app;
+				this.coffeeBreak = this;
+				this.socket = new Socket();
+				this.socket.start();
+				this.codeCoverage = options.coverage;
+				this.scanProject(function(err, conf) {
+					log.sys('Server started successful');
+				});
+
+				this.emit('ready');
+			}.bind(this));
+
+
+			process.on('SIGINT', function() {
+				this.expressServer.stop();
+				this.socket.stop();
+				process.exit();
+			}.bind(this));
+		}
+		else if(command === 'ci') {
+			this.expressServer = new ExpressServer(conf);
+			this.expressServer.start({}, function() {
+				this.app = this.expressServer.app;
+				this.emit('ready');
+			});
+
+			this.socket = new Socket();
+			this.socket.start();
+			this.codeCoverage = options.coverage;
+			this.scanProject(function(err, conf) {
+				this.runTests(function(err, status) {
+					this.expressServer.stop();
+
+					var exitCode = err ? 1 : status ? 0 : 1;
+					process.exit(exitCode);
+				}.bind(this));
+			}.bind(this));
+
+			this.socket.stop();
+		}
+		else if(command === 'start') {
+			this.start();
+
+
+			process.on('SIGINT', function() {
+				process.exit();
+			});
+		}
+		else if (command === 'default') {
+			this.initServer(function() {
+				this.start();
+			}.bind(this));
+		}
+		else {
+			this.printStatus();
+		}
+	};
+
+	/**
+	 * Initialize Express and Socket server
+	 *
+	 * @private
+	 */
+	CoffeeBreak.prototype.initServer = function(callback) {
+		this.expressServer = new ExpressServer({
+			name: 'CoffeeBreak Server',
+			baseDir: __dirname,
+			port: this.port
+		});
+
+		this.expressServer.start({}, function() {
+			this.app = this.expressServer.app;
+			this.socket = new Socket();
+			this.socket.start();
+
+			this.emit('ready');
+
+			callback(this);
+		}.bind(this));
+
+		process.on('SIGINT', function() {
+			this.socket.stop();
+			this.expressServer.stop();
+			process.exit();
+		});
+	};
 
 	/**
 	 * Start coffeebreak
 	 *
 	 * @method start
 	 */
-	coffeeBreak.start = function() {
+	CoffeeBreak.prototype.start = function() {
 		this.scanProject(function() {
 			this.wachEnabled = true;
 			if (this.wachEnabled) {
@@ -50,10 +154,14 @@ module.exports = function() {
 
 			this.runTests();
 		}.bind(this));
-
 	};
 
-	coffeeBreak.runTests = function(projectName, callback) {
+	CoffeeBreak.prototype.stop = function() {
+		this.socket.stop();
+		this.expressServer.stop();
+	};
+
+	CoffeeBreak.prototype.runTests = function(projectName, callback) {
 		if (typeof projectName === 'function') {
 			callback = projectName;
 			projectName = null;
@@ -81,7 +189,7 @@ module.exports = function() {
 	 * @method getPublicConf
 	 * @return {Object} Public project configuration
 	 */
-	coffeeBreak.getPublicConf = function() {
+	CoffeeBreak.prototype.getPublicConf = function() {
 		var conf = {
 			projects: []
 		};
@@ -103,7 +211,7 @@ module.exports = function() {
 	 * @method scanProject
 	 * @param {Function} callback Callback function
 	 */
-	coffeeBreak.scanProject = function(callback) {
+	CoffeeBreak.prototype.scanProject = function(callback) {
 		var projectScanner = new ProjectScanner();
 		projectScanner.scan(process.cwd(), function(err, projectConf) {
 			this.projects = projectScanner.projects;
@@ -119,7 +227,7 @@ module.exports = function() {
 	 * @method watch
 	 * @param {Function} callback Callback function
 	 */
-	coffeeBreak.watch = function(callback) {
+	CoffeeBreak.prototype.watch = function(callback) {
 		var addWatch = function(file) {
 			var projectName = project.project;
 
@@ -163,7 +271,7 @@ module.exports = function() {
 	 *
 	 * @method printStatus
 	 */
-	coffeeBreak.printStatus = function() {
+	CoffeeBreak.prototype.printStatus = function() {
 		var bean = '';
 		bean += '                              ____       __  __           _                    _    \n';
 		bean += '   .⎼⎼⎼⎼⎼⎼⎼.                 / ___|___  / _|/ _| ___  ___| |__  _ __ ___  __ _| | __\n';
@@ -183,5 +291,5 @@ module.exports = function() {
 
 	};
 
-	return coffeeBreak;
+	return CoffeeBreak;
 }();

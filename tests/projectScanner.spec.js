@@ -25,16 +25,16 @@ describe('Scan project dir', function() {
 				dirName: 'ModuleA',
 				watchIgnore: '(build|dev-build|tmp)/'
 			});
+
 			expect(data.ModuleB).to.eql({
 				project: 'ModuleB',
 				cwd: path.join(__dirname, '../example/modules/moduleB'),
 				files: ['moduleb.js'],
-				tests: ['specs/test1.spec.js'],
+				tests: ['specs/test1.spec.js', 'specs/test2.spec.js'],
 				dirName: 'ModuleB',
 				watchIgnore: '(build|dev-build|tmp)/'
 			});
 			
-
 			done();
 		});
 	});

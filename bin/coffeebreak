@@ -52,4 +52,4 @@ var options = {
 	project: program.project
 };
 
-coffeeBreak.start(command, options);
+coffeeBreak.init(command, options);

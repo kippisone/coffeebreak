@@ -11,7 +11,7 @@ var Socket = require('../modules/socket');
 
 expect = require('sinon-expect').enhance(expect, sinon, 'was');
 
-describe.only('Socket', function() {
+describe('Socket', function() {
 	describe('initialize', function() {
 		it('Should initialize a socket module', function() {
 			expect(Socket).to.be.a('function');
@@ -47,7 +47,6 @@ describe.only('Socket', function() {
 
 		afterEach(function() {
 			createServerStub.restore();	
-				
 		});
 
 		it('Should start a sockjs server', function() {

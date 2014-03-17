@@ -3,9 +3,9 @@ module.exports = function() {
 	
 	var utils = {};
 
-	utils.watch(function(dir) {
+	utils.watch = function(dir) {
 
-	});
+	};
 
 	return utils;
 
