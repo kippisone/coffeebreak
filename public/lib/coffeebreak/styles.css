@@ -9,6 +9,11 @@ body {
     border-top: none;
 }
 
+#coffeeBreakHeader {
+	position: fixed;
+	background-color: #ddd;
+}
+
 #mainNavigation {
 	vertical-align: middle;
 	margin-top: -60px;
@@ -70,6 +75,10 @@ body {
 
 #mocha {
 	line-height: 1.5;
+}
+
+#mocha-stats {
+	top: 50px;
 }
 
 .projectsListing {

@@ -82,12 +82,15 @@ module.exports = function() {
 	 * @return {Object} Public project configuration
 	 */
 	coffeeBreak.getPublicConf = function() {
-		var conf = [];
+		var conf = {
+			projects: []
+		};
 
 		for (var p in this.projects) {
-			conf.push({
+			conf.projects.push({
 				project: this.projects[p].project,
-				dirName: this.projects[p].dirName
+				dirName: this.projects[p].dirName,
+				status: this.projects[p].status
 			});
 		}
 

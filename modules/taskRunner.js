@@ -1,8 +1,23 @@
+var fs = require('fs'),
+	path = require('path');
+
 var log = require('xqnode-logger'),
 	async = require('async');
 
 module.exports = function() {
 	"use strict";
+
+	var SourceTask = function() {
+
+	};
+
+	SourceTask.insertJSFile = function(file) {
+		console.log('Add file:', file);
+	};
+
+	SourceTask.insertJSCode = function(code) {
+		console.log('Add code:', code);
+	};
 
 	var TaskRunner = function() {
 		this.__tasks = {};
@@ -15,9 +30,28 @@ module.exports = function() {
 	 * @method loadTasks
 	 */
 	TaskRunner.prototype.loadTasks = function() {
-		require('coffeebreak-component-build')(this);
-		require('coffeebreak-grunt-task')(this);
-		require('coffeebreak-coverage')(this);
+		var cbModules = {};
+
+		log.sys('Load coffeebreak modules');
+		
+		[
+			path.join(__dirname, '../node_modules'),
+			path.join(process.cwd(), 'node_modules')
+		].forEach(function(moduleDir) {
+			log.sys('... load from ', moduleDir);
+			var allModules = fs.readdirSync(moduleDir);
+			allModules.forEach(function(moduleName) {
+				if (/^coffeebreak-/.test(moduleName)) {
+					cbModules[moduleName] = path.join(moduleDir, moduleName);
+				}
+			});
+		});
+
+
+		Object.keys(cbModules).forEach(function(m) {
+			log.sys('... load coffeebreak module', m);
+			require(cbModules[m])(this);
+		}.bind(this));
 	};
 
 	/**
@@ -27,7 +61,7 @@ module.exports = function() {
 	 * @param {String} task Task name
 	 */
 	TaskRunner.prototype.registerTask = function(task, taskFunc) {
-		if (['preprocessor', 'codecoverage', 'testrunner'].indexOf(task) === -1) {
+		if (['preprocessor', 'codecoverage', 'testrunner', 'source'].indexOf(task) === -1) {
 			log.warn('Unknown task name ' + task);
 			return;
 		}
@@ -36,7 +70,12 @@ module.exports = function() {
 			this.__tasks[task] = [];
 		}
 
-		this.__tasks[task].push(taskFunc);
+		if (task === 'source') {
+			this.__tasks[task].push(taskFunc.bind(new SourceTask()));
+		}
+		else {
+			this.__tasks[task].push(taskFunc);
+		}
 	};
 
 	/**

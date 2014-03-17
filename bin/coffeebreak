@@ -25,6 +25,10 @@ program
 	.command('ci')
 	.description('Continious integration mode. Start server, run all tests and shut the server down');
 
+program
+	.command('start')
+	.description('Start CoffeeBreak test runner without webserver. A web server must have already been started by another proccess');
+
 program.on('--help', function() {
 	coffeeBreak('status');
 });
@@ -39,7 +43,7 @@ else {
 	log.setLevel('sys');
 }
 
-var command = program.args[0];
+var command = program.args[0] || 'default';
 
 var options = {
 	coverage: program.coverage,
@@ -48,12 +52,4 @@ var options = {
 	project: program.project
 };
 
-if (command === 'server') {
-	coffeeBreak.start('server', options);
-}
-else if (command === 'ci') {
-	coffeeBreak.start('ci', options);
-}
-else {
-	coffeeBreak.start('default', options);
-}
+coffeeBreak.start(command, options);

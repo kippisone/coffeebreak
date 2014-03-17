@@ -95,13 +95,19 @@ module.exports = function() {
 	 * @param {String} filePattern File pattern
 	 */
 	ProjectScanner.prototype.getProjectFiles = function(dir, filePattern) {
+		log.dev('Scan project folder ' + dir + ' using pattern ' + filePattern);
 		log.dev('FilePattern', filePattern);
 		if (Array.isArray(filePattern)) {
-			log.dev('Skip file pattern, is an array', filePattern);
-			return filePattern;
+			var files = [];
+			filePattern.forEach(function(file) {
+				files.concat(glob.sync(file, {
+					cwd: dir
+				}));
+			});
+
+			return files;
 		}
 		
-		log.dev('Scan project folder ' + dir + ' using pattern ' + filePattern);
 		return glob.sync(filePattern, {
 			cwd: dir
 		});
