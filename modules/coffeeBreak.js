@@ -30,7 +30,6 @@ module.exports = function() {
 
 		var conf = {
 			name: 'CoffeeBreak Server',
-			baseDir: __dirname,
 			port: this.port
 		};
 
@@ -111,7 +110,7 @@ module.exports = function() {
 	CoffeeBreak.prototype.initServer = function(callback) {
 		this.expressServer = new ExpressServer({
 			name: 'CoffeeBreak Server',
-			baseDir: __dirname,
+			baseDir: path.join(__dirname,'..'),
 			port: this.port
 		});
 
@@ -129,7 +128,7 @@ module.exports = function() {
 			this.socket.stop();
 			this.expressServer.stop();
 			process.exit();
-		});
+		}.bind(this));
 	};
 
 	/**

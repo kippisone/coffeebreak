@@ -6,14 +6,15 @@ module.exports = function(app, callback) {
 
 	var log = require('xqnode-logger');
 
-	var coffeeBreakApp = require('../modules/app');
+	var coffeeBreakApp = require('../coffeebreak');
+	console.log('coffeeBreakApp', coffeeBreakApp);
 
 	app.get('/cbconf.json', function(req, res) {
-		res.json(200, coffeeBreakApp.coffeeBreak.getPublicConf());
+		res.json(200, coffeeBreakApp.getPublicConf());
 	});
 
 	app.addRoute('get', '/', 'Show CoffeeBreak index page', function(req, res) {
-		var projects = coffeeBreakApp.coffeeBreak.projects;
+		var projects = coffeeBreakApp.projects;
 		console.log('Projects', projects);
 		res.render('projectListing', {
 			projects: projects
@@ -21,7 +22,7 @@ module.exports = function(app, callback) {
 	});
 
 	app.addRoute('get', '/projects', 'Show CoffeeBreak projects overview page', function(req, res) {
-		var projects = coffeeBreakApp.coffeeBreak.projects;
+		var projects = coffeeBreakApp.projects;
 		console.log('Projects', projects);
 		res.render('projectListing', {
 			projects: projects
@@ -38,8 +39,8 @@ module.exports = function(app, callback) {
 		log.dev('Got request in project ' + projectName, req.path);
 		log.dev('Conf', coffeeBreakApp.coffeeBreak);
 
-		if (coffeeBreakApp.coffeeBreak.projects[projectName]) {
-			var conf = coffeeBreakApp.coffeeBreak.projects[projectName];
+		if (coffeeBreakApp.projects[projectName]) {
+			var conf = coffeeBreakApp.projects[projectName];
 			res.render('mochaSpecRunner', {
 				files: conf.files,
 				tests: conf.tests,
@@ -56,7 +57,7 @@ module.exports = function(app, callback) {
 
 /*	app.get(/\/projects\/([a-zA-Z0-9_-]+)\/(.*)$/, function(req, res) {
 		var projectName = req.params[0],
-			conf = coffeeBreakApp.coffeeBreak.projects[projectName],
+			conf = coffeeBreakApp.projects[projectName],
 			file = path.join(conf.cwd, req.params[1]);
 
 		log.dev('Get file ' + file + '', req.params);
@@ -65,8 +66,9 @@ module.exports = function(app, callback) {
 
 	app.get(/\/projects\/([a-zA-Z0-9_-]+)\/(.*)$/, function(req, res) {
 		var projectName = req.params[0],
-			conf = coffeeBreakApp.coffeeBreak.projects[projectName],
+			conf = coffeeBreakApp.projects[projectName],
 			file;
+
 		
 		file = path.join(conf.cwd, req.params[1]);
 		if (conf.cwdInstrumented) {
@@ -77,6 +79,7 @@ module.exports = function(app, callback) {
 			}
 		}
 
+		console.log('Load file:', file);
 		log.dev('Get file ' + file + '', req.params);
 		res.sendfile(file);
 	});

@@ -39,12 +39,14 @@ module.exports = function() {
 			path.join(process.cwd(), 'node_modules')
 		].forEach(function(moduleDir) {
 			log.sys('... load from ', moduleDir);
-			var allModules = fs.readdirSync(moduleDir);
-			allModules.forEach(function(moduleName) {
-				if (/^coffeebreak-/.test(moduleName)) {
-					cbModules[moduleName] = path.join(moduleDir, moduleName);
-				}
-			});
+			if (fs.existsSync(moduleDir)) {
+				var allModules = fs.readdirSync(moduleDir);
+				allModules.forEach(function(moduleName) {
+					if (/^coffeebreak-/.test(moduleName)) {
+						cbModules[moduleName] = path.join(moduleDir, moduleName);
+					}
+				});
+			}
 		});
 
 
