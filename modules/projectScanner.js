@@ -48,12 +48,16 @@ module.exports = function() {
 	 * @param Function callback Callback function
 	 */
 	ProjectScanner.prototype.scan = function(dir, callback) {
-		log.dev('\033[38;5;220mScan dir...\033[m', dir);
 		glob('**/+(coffeebreak.json|.coffeebreak.json)', {
 			cwd: dir,
 			dot: true
 		}, function(err, files) {
 			files.forEach(function(file) {
+				console.log(file);
+				if (/(\/|^)node_modules\//.test(file)) {
+					return;
+				}
+
 				log.dev('Parse coffeebreak project configurstion', file);
 				var project = fs.readFileSync(path.join(dir, file));
 				if (project) {

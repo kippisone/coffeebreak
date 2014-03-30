@@ -97,7 +97,7 @@ describe('CoffeeBreak', function() {
 			});
 
 			expect(socketStartStub).was.calledOnce();
-			expect(scanProjectStub).was.notCalled();
+			expect(scanProjectStub).was.calledOnce();
 			expect(testRunnerStub).was.notCalled();
 		});
 

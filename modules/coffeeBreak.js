@@ -45,7 +45,7 @@ module.exports = function() {
 
 		if (command === 'server') {
 			this.initServer(function() {
-
+				this.scanProject(function(err, conf) {});
 			}.bind(this));
 		}
 		else if(command === 'ci') {
@@ -200,12 +200,18 @@ module.exports = function() {
 	 * @param {Function} callback Callback function
 	 */
 	CoffeeBreak.prototype.scanProject = function(callback) {
-		var projectScanner = new ProjectScanner();
-		projectScanner.scan(process.cwd(), function(err, projectConf) {
+		var projectScanner = new ProjectScanner(),
+			dir = process.cwd();
+
+		log.sys('\033[38;5;220mScan dir for projects ...\033[m', dir);
+		var start = Date.now();
+		projectScanner.scan(dir, function(err, projectConf) {
 			this.projects = projectScanner.projects;
 			this.files = projectScanner.files;
 
 			callback(null, this);
+
+			log.sys('\033[38;5;220m' + Object.keys(this.projects).length + ' projects found in ' + (Date.now() - start) + 'ms!\033[m', this.projects);
 		}.bind(this));
 	};
 
