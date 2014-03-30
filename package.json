@@ -2,19 +2,15 @@
   "name": "coffeebreak",
   "version": "0.1.0",
   "description": "Test runner for Mocha",
-  "main": "coffeeBreak.js",
+  "main": "coffeebreak.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt test"
   },
   "bin": {
     "coffeebreak": "bin/coffeebreak"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@kallisto:~/coffeebreak.git"
   },
   "keywords": [
     "coffee",
@@ -39,7 +35,8 @@
     "phantomjs": "~1.9.7-1",
     "async": "~0.2.10",
     "commander": "~2.1.0",
-    "sockjs": "~0.3.8"
+    "sockjs": "~0.3.8",
+    "express-server": "~0.1.0"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
