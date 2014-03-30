@@ -27,6 +27,8 @@ module.exports = function() {
 		this.port = options.port || 3005;
 		this.onlyProject = options.project || null;
 		this.diff = options.diff || null;
+		this.disableServer = options.disableServer || false;
+		this.projects = {};
 
 		var conf = {
 			name: 'CoffeeBreak Server',
@@ -111,10 +113,13 @@ module.exports = function() {
 		this.expressServer = new ExpressServer({
 			name: 'CoffeeBreak Server',
 			baseDir: path.join(__dirname,'..'),
-			port: this.port
+			port: this.port,
+			logLevel: log.getLevel()
 		});
 
-		this.expressServer.start({}, function() {
+		this.expressServer.start({
+			disableServer: this.disableServer
+		}, function() {
 			this.app = this.expressServer.app;
 			this.socket = new Socket();
 			this.socket.start();

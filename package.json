@@ -25,7 +25,7 @@
   "author": "Andi Heinkelein <andi@noname-media.com> (http://noname-media.com/)",
   "license": "MIT",
   "dependencies": {
-    "xqnode-logger": "~0.0.2",
+    "xqnode-logger": "~0.1.0",
     "glob": "~3.2.8",
     "minimatch": "~0.2.14",
     "node.extend": "~1.0.9",

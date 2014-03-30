@@ -12,6 +12,7 @@ program
 	.version(pkg.version)
 	.usage('[command] [options]')
 	.option('-d, --dev', 'Run in debug mode')
+	.option('-q, --logRequests', 'Log requests and response')
 	.option('-p, --port <port>', 'Set server port', '3005')
 	.option('-c, --coverage', 'Enable code coverage')
 	.option('-r , --project <project>', 'Run only <project>')
@@ -38,6 +39,9 @@ program.parse(process.argv);
 //Set debug mode
 if (program.dev) {
 	log.setLevel('debug');
+}
+else if (program.logRequests) {
+	log.setLevel('res');
 }
 else {
 	log.setLevel('sys');

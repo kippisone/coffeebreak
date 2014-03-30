@@ -7,7 +7,6 @@ module.exports = function(app, callback) {
 	var log = require('xqnode-logger');
 
 	var coffeeBreakApp = require('../coffeebreak');
-	console.log('coffeeBreakApp', coffeeBreakApp);
 
 	app.get('/cbconf.json', function(req, res) {
 		res.json(200, coffeeBreakApp.getPublicConf());
@@ -79,8 +78,6 @@ module.exports = function(app, callback) {
 			}
 		}
 
-		console.log('Load file:', file);
-		log.dev('Get file ' + file + '', req.params);
 		res.sendfile(file);
 	});
 

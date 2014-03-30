@@ -1,8 +1,20 @@
-var expect = require('expect.js')
+var expect = require('expect.js'),
+	sinon = require('sinon'),
+	log = require('xqnode-logger');
+
+log.setLevel('warn');
+
+var Socket = require('../modules/socket');
+
+expect = require('sinon-expect').enhance(expect, sinon, 'was');
 
 describe('CoffeeBreak', function() {
 	var CoffeeBreak = require('../modules/coffeeBreak'),
 		coffeeBreak;
+
+	var socketStartStub = sinon.stub(Socket.prototype, 'start'),
+		testRunnerStub = sinon.stub(CoffeeBreak.prototype, 'runTests'),
+		scanProjectStub = sinon.stub(CoffeeBreak.prototype, 'scanProject');
 
 	before(function(done) {
 		coffeeBreak = new CoffeeBreak();
@@ -11,12 +23,21 @@ describe('CoffeeBreak', function() {
 			done();
 		});
 
-		coffeeBreak.init();
+		coffeeBreak.init('default', {
+			disableServer: true
+		});
+
+		expect(socketStartStub).was.calledOnce();
+			expect(scanProjectStub).was.calledOnce();
+			scanProjectStub.yield();
+			expect(testRunnerStub).was.calledOnce();
 	});
 
 	after(function(done) {
 		coffeeBreak.stop();
 		setTimeout(done, 500);
+		socketStartStub.restore();
+		testRunnerStub.restore();
 	});
 
 	describe('Instance', function() {
@@ -34,10 +55,6 @@ describe('CoffeeBreak', function() {
 		
 		it('Should be a coffeeBreak.testRunner object', function() {
 			expect(coffeeBreak.testRunner).to.be.an('object');
-		});
-		
-		it.skip('Should be a coffeeBreak.htmlBuilder object', function() {
-			expect(coffeeBreak.htmlBuilder).to.be.an('object');
 		});
 		
 		it('Should be a coffeeBreak.expressServer object', function() {
