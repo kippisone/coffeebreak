@@ -4,8 +4,10 @@
   	"xdescribe": false,
   	"it": false,
   	"xit": false,
-  	"beforeEach": false,
-  	"afterEach": false
+  	"before": false,
+  	"after": false,
+    "beforeEach": false,
+    "afterEach": false
   },
   "curly": true,
   "eqnull": true,

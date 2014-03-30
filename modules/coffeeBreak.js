@@ -44,47 +44,14 @@ module.exports = function() {
 
 
 		if (command === 'server') {
-			this.expressServer = new ExpressServer(conf);
-			this.expressServer.start({}, function() {
-				this.app = this.expressServer.app;
-				this.coffeeBreak = this;
-				this.socket = new Socket();
-				this.socket.start();
-				this.codeCoverage = options.coverage;
-				this.scanProject(function(err, conf) {
-					log.sys('Server started successful');
-				});
+			this.initServer(function() {
 
-				this.emit('ready');
-			}.bind(this));
-
-
-			process.on('SIGINT', function() {
-				this.expressServer.stop();
-				this.socket.stop();
-				process.exit();
 			}.bind(this));
 		}
 		else if(command === 'ci') {
-			this.expressServer = new ExpressServer(conf);
-			this.expressServer.start({}, function() {
-				this.app = this.expressServer.app;
-				this.emit('ready');
-			});
-
-			this.socket = new Socket();
-			this.socket.start();
-			this.codeCoverage = options.coverage;
-			this.scanProject(function(err, conf) {
-				this.runTests(function(err, status) {
-					this.expressServer.stop();
-
-					var exitCode = err ? 1 : status ? 0 : 1;
-					process.exit(exitCode);
-				}.bind(this));
+			this.initServer(function() {
+				this.startCI();
 			}.bind(this));
-
-			this.socket.stop();
 		}
 		else if(command === 'start') {
 			this.start();
@@ -125,7 +92,8 @@ module.exports = function() {
 			this.socket.start();
 
 			this.emit('ready');
-
+			log.sys('Server started successful');
+			
 			callback(this);
 		}.bind(this));
 
@@ -157,6 +125,22 @@ module.exports = function() {
 			}
 
 			this.runTests();
+		}.bind(this));
+	};
+
+	/**
+	 * Start coffeebreak
+	 *
+	 * @method start
+	 */
+	CoffeeBreak.prototype.startCI = function() {
+		this.scanProject(function(err, conf) {
+			this.runTests(function(err, status) {
+				this.stop();
+
+				var exitCode = err ? 1 : status ? 0 : 1;
+				process.exit(exitCode);
+			}.bind(this));
 		}.bind(this));
 	};
 
