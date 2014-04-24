@@ -55,11 +55,27 @@ module.exports = function() {
 
 		var runTests = function() {
 			if (conf.browser) {
-				this.runBrowserTests(conf, callback);
+				this.runBrowserTests(conf, afterTest);
 			}
 			else {
-				this.runCLITests(conf, callback);			
+				this.runCLITests(conf, afterTest);			
 			}
+		}.bind(this);
+
+		var afterTest = function(err, statusCode) {
+			if (err) {
+				callback(err);
+				return;
+			}
+
+			this.taskRunner.runTasks('testrunner', conf, function(err, state) {
+				if (err) {
+					process.stdout.write('\n  \033[1;4;38;5;246mTestrunner task failed! Skipping test run\033[m\n\n');
+					callback(err);
+					return;
+				}
+				callback(null, statusCode);
+			}.bind(this));
 		}.bind(this);
 
 		// console.log('Task runner', this.taskRunner);
