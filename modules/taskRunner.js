@@ -7,17 +7,7 @@ var log = require('xqnode-logger'),
 module.exports = function() {
 	"use strict";
 
-	var SourceTask = function() {
-
-	};
-
-	SourceTask.insertJSFile = function(file) {
-		console.log('Add file:', file);
-	};
-
-	SourceTask.insertJSCode = function(code) {
-		console.log('Add code:', code);
-	};
+	var SourceTask = require('./sourceTask');
 
 	var TaskRunner = function() {
 		this.__tasks = {};
@@ -48,7 +38,6 @@ module.exports = function() {
 				});
 			}
 		});
-
 
 		Object.keys(cbModules).forEach(function(m) {
 			log.sys('... load coffeebreak module', m);

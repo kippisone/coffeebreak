@@ -209,9 +209,10 @@ module.exports = function() {
 			this.projects = projectScanner.projects;
 			this.files = projectScanner.files;
 
+			log.sys('\033[38;5;220m' + Object.keys(this.projects).length + ' projects found in ' + (Date.now() - start) + 'ms!\033[m');
+			
 			callback(null, this);
 
-			log.sys('\033[38;5;220m' + Object.keys(this.projects).length + ' projects found in ' + (Date.now() - start) + 'ms!\033[m', this.projects);
 		}.bind(this));
 	};
 

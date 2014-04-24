@@ -1,5 +1,4 @@
 var glob = require('glob'),
-	minimatch = require('minimatch'),
 	log = require('xqnode-logger'),
 	extend = require('node.extend'),
 	path = require('path'),
@@ -53,12 +52,11 @@ module.exports = function() {
 			dot: true
 		}, function(err, files) {
 			files.forEach(function(file) {
-				console.log(file);
 				if (/(\/|^)node_modules\//.test(file)) {
 					return;
 				}
 
-				log.dev('Parse coffeebreak project configurstion', file);
+				log.dev('Parse coffeebreak project configuration', file);
 				var project = fs.readFileSync(path.join(dir, file));
 				if (project) {
 					project = JSON.parse(project);
@@ -86,7 +84,7 @@ module.exports = function() {
 				}
 			}.bind(this));
 
-			log.dev('Project configuration after scan', this.projects);
+			// log.dev('Project configuration after scan', this.projects);
 			callback(null, this.projects);
 
 		}.bind(this));

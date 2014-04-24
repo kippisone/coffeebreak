@@ -11,21 +11,21 @@ var Socket = (function() {
 		});
 
 		this.sockJS.onopen = function() {
-			console.log('open');
+			// console.log('open');
 			self.setReady();
 		};
 
 		this.sockJS.onmessage = function(e) {
-			console.log('message', e.data);
+			// console.log('message', e.data);
 		};
 		this.sockJS.onclose = function() {
-			console.log('close');
+			// console.log('close');
 		};
 	};
 
 	Socket.prototype.emit = function(eventName, data) {
 		this.ready(function() {
-			console.log('[Socket] Send message ', eventName, data);
+			// console.log('[Socket] Send message ', eventName, data);
 			this.sockJS.send(JSON.stringify({
 				eventName: eventName,
 				data: data

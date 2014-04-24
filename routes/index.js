@@ -6,7 +6,8 @@ module.exports = function(app, callback) {
 
 	var log = require('xqnode-logger');
 
-	var coffeeBreakApp = require('../coffeebreak');
+	var coffeeBreakApp = require('../coffeebreak'),
+		HTMLBuilder = require('../modules/htmlBuilder');
 
 	app.get('/cbconf.json', function(req, res) {
 		res.json(200, coffeeBreakApp.getPublicConf());
@@ -40,12 +41,8 @@ module.exports = function(app, callback) {
 
 		if (coffeeBreakApp.projects[projectName]) {
 			var conf = coffeeBreakApp.projects[projectName];
-			res.render('mochaSpecRunner', {
-				files: conf.files,
-				tests: conf.tests,
-				project: conf.project,
-				requirejs: conf.requirejs
-			});
+			var htmlBuilder = new HTMLBuilder(req, res);
+			htmlBuilder.renderSpecRunner(conf);
 		}
 		else {
 			res.render('projectNotFound', {

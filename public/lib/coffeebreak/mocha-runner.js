@@ -1,5 +1,5 @@
 /*global Socket:false, mochaPhantomJS:false, mocha:false */
-(function() {
+var MochaRunner = (function() {
 
 	var MochaRunner = function() {
 		this.socket = new Socket();
@@ -7,7 +7,7 @@
 	};
 
 	MochaRunner.prototype.init = function() {
-		this.runner = mocha.run();
+		this.runner = window.mochaPhantomJS ? mochaPhantomJS.run() : mocha.run();
 
 		this.socket.emit('test.start');
 		console.log('Runner obj:', this.runner);
@@ -52,14 +52,5 @@
 		};
 	};
 
-	window.onload = function() {
-		console.log('Runner start!');
-		if (window.mochaPhantomJS) {
-			mochaPhantomJS.run();
-		}
-		else {
-			var runner = new MochaRunner();
-			runner.init();
-		}
-	};
+	return MochaRunner;
 })();

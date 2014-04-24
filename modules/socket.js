@@ -28,13 +28,13 @@ module.exports = function() {
 			// console.log('New connection', conn);
 
 			conn.on('data', function(message) {
-				log.sys('Recive socket message:', message);
+				log.dev('Recive socket message:', message);
 				message = JSON.parse(message);
 				this.__emit(message.eventName, message.data);
 			}.bind(this));
 			
 			conn.on('close', function() {
-				log.sys('Close socket connection', conn);
+				log.dev('Close socket connection');
 
 				for (var i = 0, len = this.connections.length; i < len; i++) {
 					if (this.connections[i] === conn) {

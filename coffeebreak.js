@@ -3,8 +3,8 @@ module.exports = function() {
 	'use strict';
 
 	var CoffeeBreak = require('./modules/coffeeBreak');
-	var coffeeBreakServer = new CoffeeBreak();
+	var coffeeBreak = new CoffeeBreak();
 
-	return coffeeBreakServer;
+	return coffeeBreak;
 
 }();

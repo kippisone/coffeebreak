@@ -26,14 +26,38 @@
   {{#each libs}}
     <script type="text/javascript" src="{{this}}"></script>{{/each}}
 
-  {{#each files}}
-    <script type="text/javascript" src="{{this}}"></script>{{/each}}
-    
   {{#if requirejs}}
-    <script type="text/javascript" src="/lib/requirejs/require.js" data-main="{{requirejs}}"></script>{{/if}}
+    <script type="text/javascript">
+      var require = {
+        callback: function() {
+          console.log('LOAD DONE');
+          require([{{{testsArray}}}], function() {
+            
+          var runner = new MochaRunner();
+          runner.init();
+          });
+        }
+      };
+    </script>
+    <script type="text/javascript" src="/lib/requirejs/require.js" data-main="{{requirejs}}"></script>
+  {{else}}
+    {{#each jsfiles}}
+      <script type="text/javascript" src="{{this}}"></script>{{/each}}
+      
+    {{#each files}}
+      <script type="text/javascript" src="{{this}}"></script>{{/each}}
 
-  {{#each tests}}
-    <script type="text/javascript" src="{{this}}"></script>{{/each}}
+    {{#each tests}}
+      <script type="text/javascript" src="{{this}}"></script>{{/each}}
+
+    <script type="text/javascript">
+    window.onload = function() {
+      var runner = new MochaRunner();
+      runner.init();
+    }
+    </script>
+  {{/if}}
+
 
 </head>
 <body id="testRunner">
