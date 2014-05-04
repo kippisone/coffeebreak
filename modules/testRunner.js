@@ -114,7 +114,6 @@ module.exports = function() {
 		var files = conf.tests;
 
 		log.dev('Files in ' + conf.cwd, files);
-		var counter = 0;
 		files.forEach(function(file) {
 			log.dev('Add file to mocha:' + path.join(conf.cwd, file));
 			this.mocha.addFile(path.join(conf.cwd, file));
@@ -125,8 +124,20 @@ module.exports = function() {
 		var args = [
 			'-R',
 			'list',
-			'--colors'
+			'--colors',
+			'-r',
+			'coffeebreak-expect-bundle'
 		];
+
+		if (conf.require) {
+			if (!Array.isArray(conf.require)) {
+				conf.require = conf.require.split(/\s+/);
+			}
+
+			conf.require.forEach(function(mod) {
+				args.push('-r', mod);
+			});
+		}
 
 		args = args.concat(conf.tests);
 
@@ -151,7 +162,7 @@ module.exports = function() {
 				console.log('Child process exited with code ' + code);
 			}
 
-			statusCode = code === 0 ? true : false;
+			var statusCode = code === 0 ? true : false;
 			callback(null, statusCode);
 		});
 	};

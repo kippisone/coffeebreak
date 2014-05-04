@@ -32,7 +32,7 @@ module.exports = function() {
 			if (fs.existsSync(moduleDir)) {
 				var allModules = fs.readdirSync(moduleDir);
 				allModules.forEach(function(moduleName) {
-					if (/^coffeebreak-/.test(moduleName)) {
+					if (/^coffeebreak-/.test(moduleName) && !/-bundle$/.test(moduleName)) {
 						cbModules[moduleName] = path.join(moduleDir, moduleName);
 					}
 				});

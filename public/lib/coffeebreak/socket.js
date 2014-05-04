@@ -7,7 +7,7 @@ var Socket = (function() {
 		this.__onReadyCallbacks = [];
 
 		this.sockJS = new SockJS('http://localhost:9999/cb', null, {
-			debug: true
+			debug: false
 		});
 
 		this.sockJS.onopen = function() {

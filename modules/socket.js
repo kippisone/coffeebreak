@@ -23,7 +23,11 @@ module.exports = function() {
 	Socket.prototype.start = function() {
 		log.sys('Start SocketServer on port ' + this.port);
 
-		sockjsServer = sockjs.createServer();
+		sockjsServer = sockjs.createServer({
+			log: function() {
+				
+			}
+		});
 		sockjsServer.on('connection', function(conn) {
 			// console.log('New connection', conn);
 

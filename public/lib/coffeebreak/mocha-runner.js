@@ -10,9 +10,9 @@ var MochaRunner = (function() {
 		this.runner = window.mochaPhantomJS ? mochaPhantomJS.run() : mocha.run();
 
 		this.socket.emit('test.start');
-		console.log('Runner obj:', this.runner);
+		// console.log('Runner obj:', this.runner);
 		this.runner.on('end', function(test) {
-			console.log('Result:', this.getTests(this.runner.suite));
+			// console.log('Result:', this.getTests(this.runner.suite));
 
 			this.socket.emit('test.result', {
 				duration: this.runner.stats.duration,

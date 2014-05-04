@@ -35,7 +35,7 @@
 
 	$.getJSON('/cbconf.json', function(data) {
 		cbconf = data;
-		console.log('cbconf', cbconf);
+		// console.log('cbconf', cbconf);
 		$(function() {
 			CoffeeBreak.renderNavigation();
 		});
