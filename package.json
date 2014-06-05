@@ -36,7 +36,8 @@
     "async": "~0.2.10",
     "commander": "~2.1.0",
     "sockjs": "~0.3.8",
-    "express-server": "~0.1.0"
+    "express-server": "~0.1.0",
+    "coffeebreak-expect-bundle": "0.0.1"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
