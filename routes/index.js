@@ -51,15 +51,6 @@ module.exports = function(app, callback) {
 		}
 	});
 
-/*	app.get(/\/projects\/([a-zA-Z0-9_-]+)\/(.*)$/, function(req, res) {
-		var projectName = req.params[0],
-			conf = coffeeBreakApp.projects[projectName],
-			file = path.join(conf.cwd, req.params[1]);
-
-		log.dev('Get file ' + file + '', req.params);
-		res.sendfile(file);
-	});*/
-
 	app.get(/\/projects\/([a-zA-Z0-9_-]+)\/(.*)$/, function(req, res) {
 		var projectName = req.params[0],
 			conf = coffeeBreakApp.projects[projectName],
@@ -67,12 +58,30 @@ module.exports = function(app, callback) {
 
 		
 		file = path.join(conf.cwd, req.params[1]);
-		if (conf.cwdInstrumented) {
-			var instrumentedFile = path.join(conf.cwdInstrumented, req.params[1]);
-		console.log('Check file ' + instrumentedFile);
-			if (fs.existsSync(instrumentedFile)) {
-				file = instrumentedFile;
-			}
+		console.log('File', file);
+		if (typeof file === 'object') {
+			res.send(file[file]);
+			return;
+		}
+
+		res.sendfile(file);
+	});
+
+	app.get(/\/coverage\/([a-zA-Z0-9_-]+)\/(.*)$/, function(req, res) {
+		var projectName = req.params[0],
+			conf = coffeeBreakApp.projects[projectName],
+			fileName = req.params[1],
+			file;
+
+		if (fileName === 'json-report') {
+			fileName = 'coverage-final.json';
+		}
+
+		file = path.join(conf.tmpDir, 'coverage/html-cov', fileName);
+		console.log('File', file);
+		if (typeof file === 'object') {
+			res.send(file[file]);
+			return;
 		}
 
 		res.sendfile(file);

@@ -29,11 +29,7 @@ module.exports = function() {
 		this.diff = options.diff || null;
 		this.disableServer = options.disableServer || false;
 		this.projects = {};
-
-		var conf = {
-			name: 'CoffeeBreak Server',
-			port: this.port
-		};
+		this.codeCoverage = options.coverage || false;
 
 		this.taskRunner = new TaskRunner();
 		this.taskRunner.coffeeBreak = this;
@@ -156,14 +152,14 @@ module.exports = function() {
 		}
 
 		if (projectName) {
-			this.testRunner.runOne(this.projects[projectName], function(err, result) {
+			this.testRunner.runOne(extend(true, {}, this.projects[projectName]), function(err, result) {
 				if (typeof callback === 'function') {
 					callback(err, result);
 				}
 			});
 		}
 		else {
-			this.testRunner.run(this.projects, function(err, result) {
+			this.testRunner.run(extend(true, {}, this.projects), function(err, result) {
 				if (typeof callback === 'function') {
 					callback(err, result);
 				}

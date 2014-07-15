@@ -54,6 +54,11 @@
     window.onload = function() {
       var runner = new MochaRunner();
       runner.init();
+      runner.runner.on('end', function() {
+        console.log('End');
+        runner.socket.emit('cov-report', __coverage__);
+      });
+      console.log('Runner', runner);
     }
     </script>
   {{/if}}

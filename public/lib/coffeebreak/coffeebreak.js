@@ -19,8 +19,8 @@
 			content += '\
 				<div class="navItem">\
 					<h1><a href="/projects/' + item.dirName + '/SpecRunner.html">' + item.project + '</a></h1>\
-					<a class="covLink" href="/' + item.dirName + '/SpecRunner.html">Tests</a>\
-					<a class="testLink" href="/' + item.dirName + '/CoverageRunner.html">Coverage</a>\
+					<a class="covLink" href="/projects/' + item.dirName + '/SpecRunner.html">Tests</a>\
+					<a class="testLink" href="/coverage/' + item.dirName + '/index.html">Coverage</a>\
 				</div>\
 			';
 		});

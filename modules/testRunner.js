@@ -2,7 +2,8 @@ var log = require('xqnode-logger'),
 	Mocha = require('mocha'),
 	path = require('path'),
 	spawn = require('child_process').spawn,
-	extend = require('node.extend');
+	extend = require('node.extend'),
+	Istanbul = require('istanbul');
 
 module.exports = function() {
 	// "use strict";
@@ -52,6 +53,33 @@ module.exports = function() {
 	TestRunner.prototype.runOne = function(conf, callback) {
 		log.dev('Run new test: ', conf);
 		var isCodeCoverageEnabled = this.coffeeBreak.codeCoverage;
+
+		if (isCodeCoverageEnabled) {
+			this.coffeeBreak.socket.on('cov-report', function(covObj) {
+				console.log('Got covReport');
+				console.log(covObj);
+				var outDir = path.join(conf.tmpDir, 'coverage/html-cov');
+
+				var Report = Istanbul.Report,
+					report = Report.create('html', {
+						dir: outDir
+					}),
+					collector = new Istanbul.Collector();
+
+				collector.add(covObj);
+				report.writeReport(collector, true);
+				console.log('HTML report done', outDir);
+
+				outDir = path.join(conf.tmpDir, 'coverage/json-cov');
+				report = Report.create('json', {
+					dir: outDir
+				});
+
+				report.writeReport(collector, true);
+				console.log('JSON report done', outDir);
+
+			});
+		}
 
 		var runTests = function() {
 			if (conf.browser) {

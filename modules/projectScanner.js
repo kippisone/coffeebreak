@@ -52,7 +52,9 @@ module.exports = function() {
 			dot: true
 		}, function(err, files) {
 			files.forEach(function(file) {
-				if (/(\/|^)node_modules\//.test(file)) {
+
+				if (/(\/|^)(node_modules|~cb-tmp)\//.test(file)) {
+					console.log('Ignode file', file);
 					return;
 				}
 
@@ -79,6 +81,7 @@ module.exports = function() {
 					}
 
 					this.projects[project.project].cwd = projectDir;
+					this.projects[project.project].tmpDir = this.projects[project.project].tmpDir || path.join(__dirname, '..', 'tmp', project.project);
 					var cbProject = new CoffeeBreakProject();
 					this.projects[project.project] = extend(true, cbProject, project, this.projects[project.project]);
 				}
@@ -99,8 +102,9 @@ module.exports = function() {
 	ProjectScanner.prototype.getProjectFiles = function(dir, filePattern) {
 		log.dev('Scan project folder ' + dir + ' using pattern ' + filePattern);
 		log.dev('FilePattern', filePattern);
+		var files = [];
+		
 		if (Array.isArray(filePattern)) {
-			var files = [];
 			filePattern.forEach(function(file) {
 				files.concat(glob.sync(file, {
 					cwd: dir
@@ -109,10 +113,17 @@ module.exports = function() {
 
 			return files;
 		}
+		else {
+			files = glob.sync(filePattern, {
+				cwd: dir
+			});
+		}
 		
-		return glob.sync(filePattern, {
-			cwd: dir
+		files = files.filter(function(file) {
+			return !/(\/|^)(node_modules|~cb-tmp)\//.test(file);
 		});
+
+		return files;
 	};
 
 	return ProjectScanner;
