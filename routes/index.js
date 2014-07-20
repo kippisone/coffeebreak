@@ -1,8 +1,7 @@
 module.exports = function(app, callback) {
 	'use strict';
 
-	var fs = require('fs'),
-		path = require('path');
+	var path = require('path');
 
 	var log = require('xqnode-logger');
 

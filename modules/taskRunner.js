@@ -84,6 +84,7 @@ module.exports = function() {
 			return;
 		}
 
+		// console.log('Change cwd to:', conf.cwd);
         process.chdir(conf.cwd);
 		async.applyEachSeries(this.__tasks[task], conf, log, function(err, result) {
 			if (err) {
@@ -91,7 +92,6 @@ module.exports = function() {
 				callback(err);
 			}
 			else {
-				log.dev('All ' + task + ' tasks have been done!', result);
 				callback(null, true);
 			}
 		});

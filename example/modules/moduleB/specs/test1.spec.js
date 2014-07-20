@@ -1,5 +1,3 @@
-var expect = require('expect.js');
-
 describe('TestMethod', function() {
 	it('Should get an instance of TestMethod', function() {
 		var instance = require('../moduleb');

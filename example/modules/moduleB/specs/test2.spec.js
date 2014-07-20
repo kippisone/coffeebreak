@@ -1,5 +1,3 @@
-var expect = require('expect.js');
-
 describe('Test II', function() {
 	it('Should allways pass', function() {
 		expect(true).to.be.ok();

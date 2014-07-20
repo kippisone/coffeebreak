@@ -28,6 +28,7 @@ module.exports = function() {
 		this.onlyProject = options.project || null;
 		this.diff = options.diff || null;
 		this.disableServer = options.disableServer || false;
+		this.__projectConfig = {};
 		this.projects = {};
 		this.codeCoverage = options.coverage || false;
 
@@ -153,15 +154,26 @@ module.exports = function() {
 			projectName = null;
 		}
 
+		log.sys('New test session');
+		this.projects = {};
+		this.projects = extend(this.projects, this.__projectConfig);
+
+		if (this.__projectConfig === this.projects) {
+			log.warn('Config isn\'t a copy in CoffeBreak.runTests');
+		}
+
+		var conf;
 		if (projectName) {
-			this.testRunner.runOne(extend(true, {}, this.projects[projectName]), function(err, result) {
+			conf = this.projects[projectName];
+			this.testRunner.runOne(conf, function(err, result) {
 				if (typeof callback === 'function') {
 					callback(err, result);
 				}
 			});
 		}
 		else {
-			this.testRunner.run(extend(true, {}, this.projects), function(err, result) {
+			conf = this.projects;
+			this.testRunner.run(conf, function(err, result) {
 				if (typeof callback === 'function') {
 					callback(err, result);
 				}
@@ -204,10 +216,11 @@ module.exports = function() {
 		log.sys('\033[38;5;220mScan dir for projects ...\033[m', dir);
 		var start = Date.now();
 		projectScanner.scan(dir, function(err, projectConf) {
-			this.projects = projectScanner.projects;
+			this.__projectConfig = projectScanner.projects;
+			this.projects = extend({}, this.__projectConfig);
 			this.files = projectScanner.files;
 
-			log.sys('\033[38;5;220m' + Object.keys(this.projects).length + ' projects found in ' + (Date.now() - start) + 'ms!\033[m');
+			log.sys('\033[38;5;220m' + Object.keys(this.__projectConfig).length + ' projects found in ' + (Date.now() - start) + 'ms!\033[m');
 			
 			callback(null, this);
 

@@ -2,8 +2,6 @@
 module.exports = function() {
 	'use strict';
 
-var coffeeBreak = require('../coffeebreak');
-
 	var SourceTask = function() {
 
 	};
