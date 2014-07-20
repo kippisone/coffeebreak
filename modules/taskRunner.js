@@ -11,7 +11,7 @@ module.exports = function() {
 
 	var TaskRunner = function() {
 		this.__tasks = {};
-		this.loadTasks();
+		this.baseDir = path.join(__dirname, '..');
 	};
 
 	/**
@@ -52,7 +52,7 @@ module.exports = function() {
 	 * @param {String} task Task name
 	 */
 	TaskRunner.prototype.registerTask = function(task, taskFunc) {
-		if (['preprocessor', 'codecoverage', 'testrunner', 'source'].indexOf(task) === -1) {
+		if (['preprocessor', 'testrunner', 'source',   'prepare', 'coverage', 'test', 'report', 'clean'].indexOf(task) === -1) {
 			log.warn('Unknown task name ' + task);
 			return;
 		}
@@ -84,13 +84,14 @@ module.exports = function() {
 			return;
 		}
 
+        process.chdir(conf.cwd);
 		async.applyEachSeries(this.__tasks[task], conf, log, function(err, result) {
 			if (err) {
 				log.warn('An error occurs in ' + task + ' task! Skipping ...', err);
 				callback(err);
 			}
 			else {
-				log.dev('All ' + task + ' tasks hav been done!', result);
+				log.dev('All ' + task + ' tasks have been done!', result);
 				callback(null, true);
 			}
 		});

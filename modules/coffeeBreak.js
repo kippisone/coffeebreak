@@ -32,6 +32,7 @@ module.exports = function() {
 		this.codeCoverage = options.coverage || false;
 
 		this.taskRunner = new TaskRunner();
+		this.taskRunner.loadTasks();
 		this.taskRunner.coffeeBreak = this;
 
 		this.testRunner = new TestRunner();
@@ -86,6 +87,7 @@ module.exports = function() {
 			this.app = this.expressServer.app;
 			this.socket = new Socket();
 			this.socket.start();
+			this.taskRunner.socket = this.socket;
 
 			this.emit('ready');
 			log.sys('Server started successful');

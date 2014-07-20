@@ -58,7 +58,6 @@ module.exports = function(app, callback) {
 
 		
 		file = path.join(conf.cwd, req.params[1]);
-		console.log('File', file);
 		if (typeof file === 'object') {
 			res.send(file[file]);
 			return;

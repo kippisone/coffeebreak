@@ -55,8 +55,10 @@
       var runner = new MochaRunner();
       runner.init();
       runner.runner.on('end', function() {
-        console.log('End');
-        runner.socket.emit('cov-report', __coverage__);
+        if (typeof __coverage__ === 'object') {
+          runner.socket.emit('cov-report', __coverage__);
+        }
+        runner.socket.emit('end');
       });
       console.log('Runner', runner);
     }
