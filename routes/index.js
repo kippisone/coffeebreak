@@ -1,7 +1,8 @@
 module.exports = function(app, callback) {
 	'use strict';
 
-	var path = require('path');
+	var path = require('path'),
+		fs = require('fs');
 
 	var log = require('xqnode-logger');
 
@@ -55,14 +56,34 @@ module.exports = function(app, callback) {
 			conf = coffeeBreakApp.projects[projectName],
 			file;
 
-		
 		file = path.join(conf.cwd, req.params[1]);
-		if (typeof file === 'object') {
-			res.send(file[file]);
-			return;
-		}
+		fs.readFile(file, {
+			encoding: 'utf8'
+		}, function(err, source) {
+			if (err) {
+				log.error('Read static file failed!', err);
+				res.send(500);
+				return;
+			}
 
-		res.sendfile(file);
+			file = {
+				name: file,
+				type: path.extname(file).substr(1),
+				source: source
+			};
+			
+			coffeeBreakApp.taskRunner.runTasks('serve', conf, file, function() {
+
+				if (file.file) {
+					res.type(file.type);
+					res.send(file[file]);
+					return;
+				}
+
+				res.type(file.type);
+				res.send(file.source);
+			});
+		});
 	});
 
 	app.get(/\/coverage\/([a-zA-Z0-9_-]+)\/(.*)$/, function(req, res) {

@@ -22,6 +22,8 @@ module.exports = function() {
 	TaskRunner.prototype.loadTasks = function() {
 		var cbModules = {};
 
+		this.coffeeBreak.registerTask = this.registerTask.bind(this);
+
 		log.sys('Load coffeebreak modules');
 		
 		[
@@ -41,7 +43,7 @@ module.exports = function() {
 
 		Object.keys(cbModules).forEach(function(m) {
 			log.sys('... load coffeebreak module', m);
-			require(cbModules[m])(this);
+			require(cbModules[m])(this.coffeeBreak);
 		}.bind(this));
 	};
 
@@ -52,7 +54,7 @@ module.exports = function() {
 	 * @param {String} task Task name
 	 */
 	TaskRunner.prototype.registerTask = function(task, taskFunc) {
-		if (['preprocessor', 'testrunner', 'source',   'prepare', 'coverage', 'test', 'report', 'clean'].indexOf(task) === -1) {
+		if (['start', 'preprocessor', 'testrunner', 'source',   'prepare', 'coverage', 'test', 'report', 'clean', 'serve', 'end'].indexOf(task) === -1) {
 			log.warn('Unknown task name ' + task);
 			return;
 		}
@@ -75,9 +77,15 @@ module.exports = function() {
 	 * @method runTasks
 	 * @param {String} task Task name
 	 * @param {Object} conf Conf object
+	 * @param {Object} data Data object (optional)
 	 * @param {Function} callback Callback function
 	 */
-	TaskRunner.prototype.runTasks = function(task, conf, callback) {
+	TaskRunner.prototype.runTasks = function(task, conf, data, callback) {
+		if (arguments.length === 3) {
+			callback = data;
+			data = null;
+		}
+
 		if (!this.__tasks[task]) {
 			log.dev('No ' + task + ' tasks defined');
 			callback(null, true);
@@ -86,7 +94,8 @@ module.exports = function() {
 
 		// console.log('Change cwd to:', conf.cwd);
         process.chdir(conf.cwd);
-		async.applyEachSeries(this.__tasks[task], conf, log, function(err, result) {
+		
+        var fn = function(err, result) {
 			if (err) {
 				log.warn('An error occurs in ' + task + ' task! Skipping ...', err);
 				callback(err);
@@ -94,7 +103,14 @@ module.exports = function() {
 			else {
 				callback(null, true);
 			}
-		});
+		};
+
+		if (arguments.length === 3) {
+			async.applyEachSeries(this.__tasks[task], conf, log, fn);
+		}
+		else {
+			async.applyEachSeries(this.__tasks[task], conf, data, log, fn);
+		}
 	};
 
 	return TaskRunner;

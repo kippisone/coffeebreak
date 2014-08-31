@@ -72,7 +72,8 @@ module.exports = function() {
 						this.projects[project.project] = {
 							dirName: project.dirName || projectDirName,
 							files: this.getProjectFiles(projectDir, project.files || '**/!(*.spec|*.min).js'),
-							tests: this.getProjectFiles(projectDir, project.tests || '**/*.spec.js')
+							tests: this.getProjectFiles(projectDir, project.tests || '**/*.spec.js'),
+							libs: []
 						};
 
 						if (project.watch) {

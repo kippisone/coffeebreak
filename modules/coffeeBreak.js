@@ -33,8 +33,8 @@ module.exports = function() {
 		this.codeCoverage = options.coverage || false;
 
 		this.taskRunner = new TaskRunner();
-		this.taskRunner.loadTasks();
 		this.taskRunner.coffeeBreak = this;
+		this.taskRunner.loadTasks();
 
 		this.testRunner = new TestRunner();
 		this.testRunner.coffeeBreak = this;
