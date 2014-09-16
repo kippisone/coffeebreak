@@ -11,7 +11,6 @@ module.exports = function() {
 
 	var TaskRunner = function() {
 		this.__tasks = {};
-		this.baseDir = path.join(__dirname, '..');
 	};
 
 	/**
@@ -22,6 +21,7 @@ module.exports = function() {
 	TaskRunner.prototype.loadTasks = function() {
 		var cbModules = {};
 
+		this.coffeeBreak.baseDir = path.join(__dirname, '..');
 		this.coffeeBreak.registerTask = this.registerTask.bind(this);
 
 		log.sys('Load coffeebreak modules');
