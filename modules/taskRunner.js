@@ -92,7 +92,6 @@ module.exports = function() {
 			return;
 		}
 
-		// console.log('Change cwd to:', conf.cwd);
         process.chdir(conf.cwd);
 		
         var fn = function(err, result) {

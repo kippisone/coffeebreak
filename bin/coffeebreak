@@ -31,20 +31,24 @@ program
 	.description('Start CoffeeBreak test runner without webserver. A web server must have already been started by another proccess');
 
 program.on('--help', function() {
-	coffeeBreak('status');
+	coffeeBreak.printStatus();
 });
 
 program.parse(process.argv);
 
 //Set debug mode
+var logLevel;
 if (program.dev) {
 	log.setLevel('debug');
+	logLevel = 'debug';
 }
 else if (program.logRequests) {
 	log.setLevel('res');
+	logLevel = 'res';
 }
 else {
 	log.setLevel('sys');
+	logLevel = 'rys';
 }
 
 var command = program.args[0] || 'default';
@@ -53,7 +57,8 @@ var options = {
 	coverage: program.coverage,
 	debug: program.debug,
 	port: program.port,
-	project: program.project
+	project: program.project,
+	logLevel: logLevel
 };
 
 coffeeBreak.init(command, options);

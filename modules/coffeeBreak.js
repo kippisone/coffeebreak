@@ -31,6 +31,7 @@ module.exports = function() {
 		this.__projectConfig = {};
 		this.projects = {};
 		this.codeCoverage = options.coverage || false;
+		this.logLevel = options.logLevel || 'sys';
 
 		this.taskRunner = new TaskRunner();
 		this.taskRunner.coffeeBreak = this;
@@ -79,7 +80,7 @@ module.exports = function() {
 			name: 'CoffeeBreak Server',
 			baseDir: path.join(__dirname,'..'),
 			port: this.port,
-			logLevel: log.getLevel()
+			logLevel: this.logLevel
 		});
 
 		this.expressServer.start({
