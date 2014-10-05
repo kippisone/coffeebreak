@@ -64,6 +64,11 @@ module.exports = function() {
 					project = JSON.parse(project);
 					// project = extend(new CoffeeBreakProject(), project);
 					
+					if (this.onlyProject && this.onlyProject !==  project.project) {
+						log.sys('Skipped project', project.project);
+						return;
+					}
+
 					var projectDir = path.dirname(path.join(dir, file)),
 						projectDirName = project.project.replace(/[^a-zA-Z0-9_-]/g, '');
 

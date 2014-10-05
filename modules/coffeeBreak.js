@@ -216,6 +216,7 @@ module.exports = function() {
 
 		log.sys('\033[38;5;220mScan dir for projects ...\033[m', dir);
 		var start = Date.now();
+		projectScanner.onlyProject = this.onlyProject;
 		projectScanner.scan(dir, function(err, projectConf) {
 			this.__projectConfig = projectScanner.projects;
 			this.projects = extend({}, this.__projectConfig);

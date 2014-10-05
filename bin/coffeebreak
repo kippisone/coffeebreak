@@ -48,7 +48,7 @@ else if (program.logRequests) {
 }
 else {
 	log.setLevel('sys');
-	logLevel = 'rys';
+	logLevel = 'sys';
 }
 
 var command = program.args[0] || 'default';
