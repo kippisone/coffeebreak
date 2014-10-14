@@ -1,6 +1,6 @@
 {
   "name": "coffeebreak",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Test runner for Mocha",
   "main": "coffeebreak.js",
   "directories": {
@@ -40,7 +40,6 @@
     "coffeebreak-phantomjs-runner": "^0.0.1"
   },
   "devDependencies": {
-    "sinon": "~1.10.3",
     "sinon": "~1.10.3",
     "sinon-expect": "~0.2.0",
     "grunt": "~0.4.5",
