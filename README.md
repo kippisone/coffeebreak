@@ -24,3 +24,17 @@ Command line options
     -c, --coverage            Enable code coverage
     -r , --project <project>  Run only <project>
     -i , --diff <match>       Test title must match <match>
+
+Project configuration
+---------------------
+
+Create a `coffeebreak.json` file in your project root.
+
+    {
+        "project": "Project Name",
+        "browser": true,
+        "files": ["src/**/*.js"],
+        "tests": ["tests/**/*.spec.js"]
+    }
+
+
