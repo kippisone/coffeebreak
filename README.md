@@ -38,3 +38,11 @@ Create a `coffeebreak.json` file in your project root.
     }
 
 
+Properties:
+-----------
+
+*project* - Sets a test project name.
+*browser* - Tells the testrunner that Javascript tests should be parsed as Frontendtests.
+*files* - Path to required source files
+*tests* - Path to your spec files
+*watch* - Watch this files for changes
