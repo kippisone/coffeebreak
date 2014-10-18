@@ -45,4 +45,4 @@ Properties:
 *browser* - Tells the testrunner that Javascript tests should be parsed as Frontendtests.
 *files* - Path to required source files
 *tests* - Path to your spec files
-*watch* - Watch this files for changes
+*watch* - Watch this files for changes. If this property isn't set than all files from the `files` and `tests' properties are watched for changes
